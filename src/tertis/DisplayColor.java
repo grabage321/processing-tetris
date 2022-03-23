@@ -21,9 +21,10 @@ public enum DisplayColor {
     private final int g;
     private final int b;
     private final int a;
+    private final boolean isGhost;
 
     static {
-        ghostAlpha = 96;
+        ghostAlpha = 128;
     }
 
     private DisplayColor(int r, int g, int b) {
@@ -31,20 +32,20 @@ public enum DisplayColor {
         this.g = g;
         this.b = b;
         this.a = 255;
-
+        this.isGhost = false;
     }
 
     private DisplayColor(int r, int g, int b, boolean isGhost) {
         this.r = r;
         this.g = g;
         this.b = b;
+        this.isGhost = isGhost;
 
         if (isGhost)
-            this.a = 96;
+            this.a = 128;
         else
             this.a = 255;
     }
-
 
     public int getR() {
         return this.r;
@@ -60,5 +61,9 @@ public enum DisplayColor {
 
     public int getA() {
         return this.a;
+    }
+
+    public boolean isGhost() {
+        return this.isGhost;
     }
 }

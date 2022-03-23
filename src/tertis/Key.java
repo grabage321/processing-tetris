@@ -11,8 +11,8 @@ public class Key extends PApplet {
     public static float das = 100;
 
     /**
-     * For calculating a key's initial input, along with when the key's input should be repeated
-     * based on the DAS and ARR.
+     * For returning a key's initial input, along with when the key's input should be repeated based
+     * on the DAS and ARR.
      *
      * @return {@code true} on frames where they key is pressed/repeated
      */

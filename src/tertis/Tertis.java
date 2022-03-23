@@ -49,10 +49,18 @@ public class Tertis extends PApplet {
         if (Key.keyRepeat("w", frameCount))
             Piece.testPiece.moveUp();
 
+        if (Key.keyFrame.get("37") != null && Key.keyFrame.get("37") == frameCount - 1)
+            Piece.testPiece.rotate(Rotation.COUNTERCLOCKWISE);
+        if (Key.keyFrame.get("38") != null && Key.keyFrame.get("38") == frameCount - 1)
+            Piece.testPiece.rotate(Rotation.ONEEIGHTY);
         if (Key.keyFrame.get("39") != null && Key.keyFrame.get("39") == frameCount - 1)
-            Piece.testPiece.rotateCW();
+            Piece.testPiece.rotate(Rotation.CLOCKWISE);
+
+        //Piece.testGhost.ghostUpdate(Piece.testPiece);
+        //Piece.testGhost.display();
 
         Piece.testPiece.display();
+        //Piece.renderGhost(Piece.testPiece);
 
         keyTestDraw();
         drawBoard();
