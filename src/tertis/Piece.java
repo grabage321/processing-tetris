@@ -18,17 +18,30 @@ public class Piece {
                 this.dc = (type == 'I') ? DisplayColor.I : DisplayColor.GI;
 
                 this.row = 20;
-                this.col = 4;
+                this.col = 5;
                 this.rot = 0;
                 tiles[0] = new Tile(row, col - 2);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
                 tiles[3] = new Tile(row, col + 1);
             }
+            case 'O', 'o' -> {
+                // ab
+                // Cd
+
+                this.dc = (type == 'O') ? DisplayColor.O : DisplayColor.GO;
+
+                this.row = 20;
+                this.col = 4;
+                this.rot = 0;
+                tiles[0] = new Tile(row + 1, col);
+                tiles[1] = new Tile(row + 1, col + 1);
+                tiles[2] = new Tile(row, col);
+                tiles[3] = new Tile(row, col + 1);
+            }
             case 'T', 't' -> {
                 //  a
                 // bCd
-                //
 
                 this.dc = (type == 'T') ? DisplayColor.T : DisplayColor.GT;
 
@@ -36,6 +49,62 @@ public class Piece {
                 this.col = 4;
                 this.rot = 0;
                 tiles[0] = new Tile(row + 1, col);
+                tiles[1] = new Tile(row, col - 1);
+                tiles[2] = new Tile(row, col);
+                tiles[3] = new Tile(row, col + 1);
+            }
+            case 'S', 's' -> {
+                //  ab
+                // cD
+
+                this.dc = (type == 'S') ? DisplayColor.S : DisplayColor.GS;
+
+                this.row = 20;
+                this.col = 4;
+                this.rot = 0;
+                tiles[0] = new Tile(row + 1, col + 1);
+                tiles[1] = new Tile(row + 1, col);
+                tiles[2] = new Tile(row, col - 1);
+                tiles[3] = new Tile(row, col);
+            }
+            case 'Z', 'z' -> {
+                // ab
+                //  Cd
+
+                this.dc = (type == 'Z') ? DisplayColor.Z : DisplayColor.GZ;
+
+                this.row = 20;
+                this.col = 4;
+                this.rot = 0;
+                tiles[0] = new Tile(row + 1, col - 1);
+                tiles[1] = new Tile(row + 1, col);
+                tiles[2] = new Tile(row, col);
+                tiles[3] = new Tile(row, col + 1);
+            }
+            case 'J', 'j' -> {
+                // a
+                // bCd
+
+                this.dc = (type == 'J') ? DisplayColor.J : DisplayColor.GJ;
+
+                this.row = 20;
+                this.col = 4;
+                this.rot = 0;
+                tiles[0] = new Tile(row + 1, col - 1);
+                tiles[1] = new Tile(row, col - 1);
+                tiles[2] = new Tile(row, col);
+                tiles[3] = new Tile(row, col + 1);
+            }
+            case 'L', 'l' -> {
+                //   a
+                // bCd
+
+                this.dc = (type == 'L') ? DisplayColor.L : DisplayColor.GL;
+
+                this.row = 20;
+                this.col = 4;
+                this.rot = 0;
+                tiles[0] = new Tile(row + 1, col + 1);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
                 tiles[3] = new Tile(row, col + 1);
@@ -55,6 +124,11 @@ public class Piece {
             Board.displayBoard[i.getRow()][i.getCol()] = null;
     }
 
+    /**
+     * Rotates the piece clockwise, counter-clockwise, or 180 degrees. Unless it's the O.
+     *
+     * @param rotation direction to rotate
+     */
     public void rotate(Rotation rotation) {
         // Allow rotation if the piece isn't an O
         boolean canRot = this.dc != DisplayColor.O;
@@ -84,7 +158,7 @@ public class Piece {
                 canRot &= Board.board[r][c] != 1;
             else {
                 canRot = false;
-                System.out.println("Failed");
+                //System.out.println("Failed");
             }
         }
 
@@ -113,82 +187,78 @@ public class Piece {
         }
     }
 
-    // Test function
-    public boolean moveUp() {
+    /**
+     * Moves the piece down, left, or right.
+     * <p>
+     * It can also do up, but we don't speak of that.
+     *
+     * @param direction direction to move the piece
+     * @return {@code true} if the move was successful
+     */
+    public boolean move(Direction direction) {
         boolean canMove = true;
-        for (Tile i : tiles) {
-            if (i.getRow() != Board.displayBoardHeight - 1)
-            canMove &= Board.board[i.getRow() + 1][i.getCol()] != 1;
-            else
-            canMove = false;
-        }
 
-        if (canMove) {
-            for (Tile i : this.tiles)
-                Board.displayBoard[i.getRow()][i.getCol()] = null;
-            for (Tile i : this.tiles)
-                i.setRow(i.getRow() + 1);
-            this.row += 1;
-        }
+        switch (direction) {
+            case UP -> {
+                for (Tile i : tiles) {
+                    if (i.getRow() != Board.displayBoardHeight - 1)
+                        canMove &= Board.board[i.getRow() + 1][i.getCol()] != 1;
+                    else
+                        canMove = false;
+                }
 
-        return canMove;
-    }
+                if (canMove) {
+                    this.clear();
+                    for (Tile i : this.tiles)
+                        i.setRow(i.getRow() + 1);
+                    this.row += 1;
+                }
+            }
+            case DOWN -> {
+                for (Tile i : this.tiles) {
+                    if (i.getRow() != 0)
+                        canMove &= Board.board[i.getRow() - 1][i.getCol()] != 1;
+                    else
+                        canMove = false;
+                }
 
-    public boolean moveDown() {
-        boolean canMove = true;
-        for (Tile i : this.tiles) {
-            if (i.getRow() != 0)
-                canMove &= Board.board[i.getRow() - 1][i.getCol()] != 1;
-            else
-                canMove = false;
-        }
+                if (canMove) {
+                    this.clear();
+                    for (Tile i : this.tiles)
+                        i.setRow(i.getRow() - 1);
+                    this.row -= 1;
+                }
+            }
+            case LEFT -> {
+                for (Tile i : this.tiles) {
+                    if (i.getCol() != 0)
+                        canMove &= Board.board[i.getRow()][i.getCol() - 1] != 1;
+                    else
+                        canMove = false;
+                }
 
-        if (canMove) {
-            for (Tile i : this.tiles)
-                Board.displayBoard[i.getRow()][i.getCol()] = null;
-            for (Tile i : this.tiles)
-                i.setRow(i.getRow() - 1);
-            this.row -= 1;
-        }
+                if (canMove) {
+                    this.clear();
+                    for (Tile i : this.tiles)
+                        i.setCol(i.getCol() - 1);
+                    this.col -= 1;
+                }
+            }
+            case RIGHT -> {
+                for (Tile i : this.tiles) {
+                    if (i.getCol() != Board.boardWidth - 1)
+                        canMove &= Board.board[i.getRow()][i.getCol() + 1] != 1;
+                    else
+                        canMove = false;
+                }
 
-        return canMove;
-    }
-
-    public boolean moveLeft() {
-        boolean canMove = true;
-        for (Tile i : this.tiles) {
-            if (i.getCol() != 0)
-                canMove &= Board.board[i.getRow()][i.getCol() - 1] != 1;
-            else
-                canMove = false;
-        }
-
-        if (canMove) {
-            for (Tile i : this.tiles)
-                Board.displayBoard[i.getRow()][i.getCol()] = null;
-            for (Tile i : this.tiles)
-                i.setCol(i.getCol() - 1);
-            this.col -= 1;
-        }
-
-        return canMove;
-    }
-
-    public boolean moveRight() {
-        boolean canMove = true;
-        for (Tile i : this.tiles) {
-            if (i.getCol() != Board.boardWidth - 1)
-                canMove &= Board.board[i.getRow()][i.getCol() + 1] != 1;
-            else
-                canMove = false;
-        }
-
-        if (canMove) {
-            for (Tile i : this.tiles)
-                Board.displayBoard[i.getRow()][i.getCol()] = null;
-            for (Tile i : this.tiles)
-                i.setCol(i.getCol() + 1);
-            this.col += 1;
+                if (canMove) {
+                    this.clear();
+                    for (Tile i : this.tiles)
+                        i.setCol(i.getCol() + 1);
+                    this.col += 1;
+                }
+            }
         }
 
         return canMove;
@@ -202,14 +272,20 @@ public class Piece {
     public static void renderGhost(Piece piece) {
         Piece ghost = new Piece('t');
 
+        /*int dr = piece.row - ghost.row;
+        int dc = piece.col - ghost.col;
+
+        for (Tile i : ghost.tiles) {
+            i.setRow(i.getRow() + dr);
+            i.setCol(i.getCol() + dc);
+        }*/
+        System.arraycopy(piece.tiles, 0, ghost.tiles, 0, piece.tiles.length);
+
         ghost.row = piece.row;
         ghost.col = piece.col;
 
-        //System.out.println(ghost.col + ", " + piece.col);
-
-        /*System.arraycopy(piece.tiles, 0, ghost.tiles, 0, piece.tiles.length);*/
-
-        //while (ghost.moveDown());
+        // TODO: figure out why this don't worka
+        //ghost.move(Direction.DOWN);
 
         ghost.display();
     }

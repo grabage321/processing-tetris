@@ -40,15 +40,20 @@ public class Tertis extends PApplet {
     public void draw() {
         background(0);
 
-        if (Key.keyRepeat("s", frameCount))
-            Piece.testPiece.moveDown();
-        if (Key.keyRepeat("a", frameCount))
-            Piece.testPiece.moveLeft();
-        if (Key.keyRepeat("d", frameCount))
-            Piece.testPiece.moveRight();
+        // Directional moves
         if (Key.keyRepeat("w", frameCount))
-            Piece.testPiece.moveUp();
+            Piece.testPiece.move(Direction.UP);
+        if (Key.keyRepeat("s", frameCount))
+            Piece.testPiece.move(Direction.DOWN);
+        if (Key.keyRepeat("a", frameCount))
+            Piece.testPiece.move(Direction.LEFT);
+        if (Key.keyRepeat("d", frameCount))
+            Piece.testPiece.move(Direction.RIGHT);
+        // Hard drop
+        if (Key.keyFrame.get(" ") != null && Key.keyFrame.get(" ") == frameCount - 1)
+            while (Piece.testPiece.move(Direction.DOWN));
 
+        // Rotations
         if (Key.keyFrame.get("37") != null && Key.keyFrame.get("37") == frameCount - 1)
             Piece.testPiece.rotate(Rotation.COUNTERCLOCKWISE);
         if (Key.keyFrame.get("38") != null && Key.keyFrame.get("38") == frameCount - 1)
@@ -60,7 +65,7 @@ public class Tertis extends PApplet {
         //Piece.testGhost.display();
 
         Piece.testPiece.display();
-        //Piece.renderGhost(Piece.testPiece);
+        Piece.renderGhost(Piece.testPiece);
 
         keyTestDraw();
         drawBoard();

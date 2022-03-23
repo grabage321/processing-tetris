@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="175dc16d-6f0d-4d2c-86b4-0ce77bb5ae02" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/src/tertis/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tertis/Piece.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tertis/Tertis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tertis/Tertis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tertis/temp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tertis/temp.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="26m1FqkyiXHQ5U3xbj95AStSPw3" />
+  <component name="ProjectViewState">
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">
+    <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+    <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+    <property name="last_opened_file_path" value="C:/Program Files/processing-4.0b6/core/library/core.jar" />
+    <property name="project.structure.last.edited" value="Modules" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RunManager">
+    <configuration name="Tertis" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="tertis.Tertis" />
+      <module name="processing-tetris" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="tertis.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Tertis" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="175dc16d-6f0d-4d2c-86b4-0ce77bb5ae02" name="Changes" comment="" />
+      <created>1648013848822</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1648013848822</updated>
+    </task>
+    <servers />
+  </component>
+</project>
