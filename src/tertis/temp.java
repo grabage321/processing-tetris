@@ -38,7 +38,6 @@ public class temp {
         //displayBoard[20][4] = displayColor.S;
         //displayBoard[20][5] = displayColor.S;
 
-        Piece.testPiece = new Piece('T');
-        //Piece.testGhost = new Piece('t');
+        Piece.testPiece = new Piece('I');
     }
 }

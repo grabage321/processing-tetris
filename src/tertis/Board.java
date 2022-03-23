@@ -9,7 +9,8 @@ public class Board extends PApplet {
 
     public static final int boardHeight = 40;
     public static final int boardWidth = 10;
-    public static final int displayBoardHeight = 22;
+    public static final int displayBoardPad = 1;
+    public static final int displayBoardHeight = 20 + displayBoardPad;
 
     public static DisplayColor[][] displayBoard = new DisplayColor[boardHeight][boardWidth];
     public static byte[][] board = new byte[boardHeight][boardWidth];

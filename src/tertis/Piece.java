@@ -1,14 +1,17 @@
 package tertis;
 
+import java.util.ArrayList;
+
 public class Piece {
     public static Piece testPiece;
-    //public static Piece testGhost;
+    //public static Piece ghost;
+    public static ArrayList<Tile> prevGhostTiles = new ArrayList<>();
 
-    public int row;
-    public int col;
-    public int rot;
-    public DisplayColor dc;
-    private Tile[] tiles = new Tile[4];
+    private int row;
+    private int col;
+    private char type;
+    private DisplayColor dc;
+    public Tile[] tiles = new Tile[4];
 
     public Piece(char type) {
         switch (type) {
@@ -19,7 +22,6 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 5;
-                this.rot = 0;
                 tiles[0] = new Tile(row, col - 2);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
@@ -33,7 +35,6 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
-                this.rot = 0;
                 tiles[0] = new Tile(row + 1, col);
                 tiles[1] = new Tile(row + 1, col + 1);
                 tiles[2] = new Tile(row, col);
@@ -47,7 +48,6 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
-                this.rot = 0;
                 tiles[0] = new Tile(row + 1, col);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
@@ -61,7 +61,6 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
-                this.rot = 0;
                 tiles[0] = new Tile(row + 1, col + 1);
                 tiles[1] = new Tile(row + 1, col);
                 tiles[2] = new Tile(row, col - 1);
@@ -75,7 +74,6 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
-                this.rot = 0;
                 tiles[0] = new Tile(row + 1, col - 1);
                 tiles[1] = new Tile(row + 1, col);
                 tiles[2] = new Tile(row, col);
@@ -89,7 +87,6 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
-                this.rot = 0;
                 tiles[0] = new Tile(row + 1, col - 1);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
@@ -103,13 +100,14 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
-                this.rot = 0;
                 tiles[0] = new Tile(row + 1, col + 1);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
                 tiles[3] = new Tile(row, col + 1);
             }
         }
+
+        this.type = type;
     }
 
     public void display() {
@@ -200,7 +198,7 @@ public class Piece {
 
         switch (direction) {
             case UP -> {
-                for (Tile i : tiles) {
+                for (Tile i : this.tiles) {
                     if (i.getRow() != Board.displayBoardHeight - 1)
                         canMove &= Board.board[i.getRow() + 1][i.getCol()] != 1;
                     else
@@ -265,28 +263,59 @@ public class Piece {
     }
 
     /**
-     * For moving and rendering the ghost piece... But it's not working!
+     * @return This Piece's row
+     */
+    public int getRow() {
+        return this.row;
+    }
+
+    /**
+     * @return This Piece's col(umn)
+     */
+    public int getCol() {
+        return this.col;
+    }
+
+    /**
+     * @return This Piece's type
+     * <p>
+     * {@code I, i, O, o, T, t, S, s, Z, z, J, j, L, or l}
+     */
+    public char getType() {
+        return type;
+    }
+
+    /**
+     * For moving and rendering the ghost piece.
      *
      * @param piece Piece being ghosted lol
      */
     public static void renderGhost(Piece piece) {
-        Piece ghost = new Piece('t');
+        // New ghosty version of piece
+        Piece ghost = new Piece(Character.toLowerCase(piece.getType()));
 
-        /*int dr = piece.row - ghost.row;
-        int dc = piece.col - ghost.col;
+        // Clear the tiles from the previous ghost piece, and then reset the array keeping track
+        // TODO: Make sure this doesn't run on piece lock
+        for (Tile i : prevGhostTiles)
+            Board.displayBoard[i.getRow()][i.getCol()] = null;
+        prevGhostTiles.clear();
 
-        for (Tile i : ghost.tiles) {
-            i.setRow(i.getRow() + dr);
-            i.setCol(i.getCol() + dc);
-        }*/
-        System.arraycopy(piece.tiles, 0, ghost.tiles, 0, piece.tiles.length);
+        // Copy the real piece's tiles into the ghost piece, then update the ghost piece's position
+        for (int i = 0; i < Piece.testPiece.tiles.length; i++) {
+            ghost.tiles[i].setRow(Piece.testPiece.tiles[i].getRow());
+            ghost.tiles[i].setCol(Piece.testPiece.tiles[i].getCol());
+        }
+        ghost.row = Piece.testPiece.getRow();
+        ghost.col = Piece.testPiece.getCol();
 
-        ghost.row = piece.row;
-        ghost.col = piece.col;
+        // Essentially hard drop the ghost piece
+        while (ghost.move(Direction.DOWN));
 
-        // TODO: figure out why this don't worka
-        //ghost.move(Direction.DOWN);
+        // Add the dropped ghost piece's tiles into the array keeping track
+        for (Tile i : ghost.tiles)
+            Piece.prevGhostTiles.add(new Tile(i.getRow(), i.getCol()));
 
+        // Render it :)
         ghost.display();
     }
 }

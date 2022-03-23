@@ -5,6 +5,7 @@ import processing.core.*;
 public class Tertis extends PApplet {
     public void setup() {
         frameRate((float) Board.fps);
+
         temp.testPieceSetup();
     }
 
@@ -61,21 +62,18 @@ public class Tertis extends PApplet {
         if (Key.keyFrame.get("39") != null && Key.keyFrame.get("39") == frameCount - 1)
             Piece.testPiece.rotate(Rotation.CLOCKWISE);
 
-        //Piece.testGhost.ghostUpdate(Piece.testPiece);
-        //Piece.testGhost.display();
-
-        Piece.testPiece.display();
         Piece.renderGhost(Piece.testPiece);
+        Piece.testPiece.display();
 
-        keyTestDraw();
         drawBoard();
+        keyTestDraw();
     }
 
     public void keyTestDraw() {
         float keyWidth = 50;
 
         float keyOverlayX = 90;
-        float keyOverlayY = 200;
+        float keyOverlayY = 250;
 
         // I like spaghetti
         rectMode(CORNER);
@@ -139,8 +137,7 @@ public class Tertis extends PApplet {
         float boardY = 670;
         float tileSize = 30;
 
-        //line(480, 0, 480, 720);
-
+        // Draw grid dots? I think?
         for (int i = 0; i <= Board.displayBoardHeight; i++) {
             for (int j = 0; j <= Board.boardWidth; j++) {
                 strokeWeight(2);
@@ -166,6 +163,16 @@ public class Tertis extends PApplet {
                 //point(boardX - tileSize * ((boardWidth / 2.0) - 0.5 ) + j * tileSize, boardY - i * tileSize);
             }
         }
+
+        // Black out the space above the grid and draw the border around the play area
+        rectMode(CORNERS);
+        fill(0);
+        rect(0, 0, width, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * tileSize);
+        strokeWeight(3);
+        stroke(128);
+        fill(0, 0, 0, 0);
+        rect(boardX + tileSize * Board.boardWidth / 2 + 1, boardY + tileSize / 2 + 1,
+             boardX - tileSize * Board.boardWidth / 2 - 2, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * tileSize);
     }
 
     public void settings() {
