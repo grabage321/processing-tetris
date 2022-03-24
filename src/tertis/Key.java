@@ -16,14 +16,24 @@ public class Key extends PApplet {
      *
      * @return {@code true} on frames where they key is pressed/repeated
      */
-    public static boolean keyRepeat(String keyCode, int frameCount) {
-        if (Key.keys.get(keyCode) != null && Key.keys.get(keyCode) && keyFrame.get(keyCode) != null) {
-            //System.out.println(keyFrame.get(keyCode) + ", " + frameCount);
-            return keyFrame.get(keyCode) == frameCount - 1
-                    || ((frameCount - keyFrame.get(keyCode) - das / Board.mspf >= 0)
-                    && (frameCount - keyFrame.get(keyCode) - das / Board.mspf) % ((int) (arr / Board.mspf)) == 0);
+    public static boolean repeat(String keyCode, int frameCount) {
+        if (Key.keys.get(keyCode) != null && Key.keys.get(keyCode) && frame(keyCode) != null) {
+            //System.out.println(frame(keyCode) + ", " + frameCount);
+            return frame(keyCode) == frameCount - 1
+                    || ((frameCount - frame(keyCode) - das / Board.mspf >= 0)
+                    && (frameCount - frame(keyCode) - das / Board.mspf) % ((int) (arr / Board.mspf)) == 0);
         } else {
             return false;
         }
+    }
+
+    /**
+     * Basically just an alias because I'm lazy.
+     *
+     * @param keyCode Key code to retrieve frame number
+     * @return Frame the key was last pressed on
+     */
+    public static Integer frame(String keyCode) {
+        return keyFrame.get(keyCode);
     }
 }
