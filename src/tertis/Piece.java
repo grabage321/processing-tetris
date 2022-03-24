@@ -110,6 +110,9 @@ public class Piece {
         this.type = type;
     }
 
+    /**
+     * Go through tiles and put them on the display board.
+     */
     public void display() {
         for (Tile i : tiles) {
             //System.out.println("Display: (" + i.getRow() + ", " + i.getCol() + ")");
@@ -117,6 +120,9 @@ public class Piece {
         }
     }
 
+    /**
+     * Go through tiles and erase them from the display board.
+     */
     public void clear() {
         for (Tile i : tiles)
             Board.displayBoard[i.getRow()][i.getCol()] = null;
@@ -129,21 +135,23 @@ public class Piece {
      */
     public void rotate(Rotation rotation) {
         // Allow rotation if the piece isn't an O
-        boolean canRot = this.dc != DisplayColor.O;
+        boolean canRot = Character.toUpperCase(this.type) != 'O';
 
         for (Tile i : tiles) {
+            // Enable special rotation offset for I piece
+            double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
             // Initialize row and col variables in the rotated spots
-            int r = this.row + (this.col - i.getCol());
-            int c = this.col - (this.row - i.getRow());
+            int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
+            int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
 
             switch (rotation) {
                 case COUNTERCLOCKWISE -> {
-                    r = this.row - (this.col - i.getCol());
-                    c = this.col + (this.row - i.getRow());
+                    r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
+                    c = (int) (this.col + (this.row - i.getRow() - iOffset) - iOffset);
                 }
                 case ONEEIGHTY -> {
-                    r = this.row + (this.row - i.getRow());
-                    c = this.col + (this.col - i.getCol());
+                    r = (int) (this.row + (this.row - i.getRow() - iOffset) - iOffset);
+                    c = (int) (this.col + (this.col - i.getCol() - iOffset) - iOffset);
                 }
             }
 
@@ -165,17 +173,18 @@ public class Piece {
 
             for (Tile i : tiles) {
                 // Actually rotate the tiles
-                int r = this.row + (this.col - i.getCol());
-                int c = this.col - (this.row - i.getRow());
+                double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
+                int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
+                int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
 
                 switch (rotation) {
                     case COUNTERCLOCKWISE -> {
-                        r = this.row - (this.col - i.getCol());
-                        c = this.col + (this.row - i.getRow());
+                        r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
+                        c = (int) (this.col + (this.row - i.getRow() - iOffset) - iOffset);
                     }
                     case ONEEIGHTY -> {
-                        r = this.row + (this.row - i.getRow());
-                        c = this.col + (this.col - i.getCol());
+                        r = (int) (this.row + (this.row - i.getRow() - iOffset) - iOffset);
+                        c = (int) (this.col + (this.col - i.getCol() - iOffset) - iOffset);
                     }
                 }
 
