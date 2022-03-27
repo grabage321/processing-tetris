@@ -5,6 +5,8 @@ import java.util.Arrays;
 
 public class Piece {
     public static Piece testPiece;
+    public static Character hold = null;
+    public static boolean heldThisRound = false;
     public static ArrayList<Tile> prevGhostTiles = new ArrayList<>();
 
     private int row;
@@ -377,13 +379,13 @@ public class Piece {
         prevGhostTiles.clear();
 
         // Copy the real piece's tiles into the ghost piece's tiles
-        for (int i = 0; i < Piece.testPiece.tiles.length; i++) {
-            ghost.tiles[i].setRow(Piece.testPiece.tiles[i].getRow());
-            ghost.tiles[i].setCol(Piece.testPiece.tiles[i].getCol());
+        for (int i = 0; i < piece.tiles.length; i++) {
+            ghost.tiles[i].setRow(piece.tiles[i].getRow());
+            ghost.tiles[i].setCol(piece.tiles[i].getCol());
         }
         // Update the ghost piece's position to match the given piece
-        ghost.row = Piece.testPiece.getRow();
-        ghost.col = Piece.testPiece.getCol();
+        ghost.row = piece.getRow();
+        ghost.col = piece.getCol();
 
         // Essentially hard drop the ghost piece
         while (ghost.move(Direction.DOWN));
@@ -412,9 +414,12 @@ public class Piece {
         // make sure the piece being swapped out is also cleared from the display board
         prevGhostTiles.addAll(Arrays.asList(piece.tiles));
 
+        // Mark that hold has been used
+        heldThisRound = true;
+
         // Essentially swap the held piece and the current piece
-        Character temp = Board.hold;
-        Board.hold = piece.getType();
+        Character temp = hold;
+        hold = piece.getType();
         return (temp == null)? null : new Piece(temp);
     }
 }

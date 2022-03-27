@@ -51,12 +51,13 @@ public class Tertis extends PApplet {
             Board.generateBag();
 
         // Hold
-        if (Key.frame("q") != null && Key.frame("q") == frameCount - 1)
+        if (Key.frame("q") != null && Key.frame("q") == frameCount - 1 && !Piece.heldThisRound)
             Piece.testPiece = Piece.hold(Piece.testPiece);
 
         if (Piece.testPiece == null) {
             //System.out.println("Generating new " + Board.next.peek() + " piece");
             Piece.testPiece = new Piece(Board.next.remove());
+            Piece.heldThisRound = false;
         }
 
         Piece p = Piece.testPiece;
@@ -209,11 +210,15 @@ public class Tertis extends PApplet {
         Queue<Character> nextCopy = new ArrayDeque<>(Board.next);
         for (int i = 0; i < Board.previews; i++)
             drawPreview(700, 160 + i * 3 * Board.tileSize, nextCopy.remove());
-        if (Board.hold != null)
-            drawPreview(200, 160, Board.hold);
+        if (Piece.hold != null)
+            drawPreview(200, 160, Piece.hold, Piece.heldThisRound);
     }
 
     public void drawPreview(float x, float y, char type) {
+        drawPreview(x, y, type, false);
+    }
+
+    public void drawPreview(float x, float y, char type, boolean heldThisRound) {
         // Initialize grid used for storing next queue piece tiles
         DisplayColor[][] nextDisplay = new DisplayColor[Board.previewRows][Board.previewCols];
 
@@ -278,7 +283,11 @@ public class Tertis extends PApplet {
                 for (int j = 0; j < Board.previewCols; j++) {
                     // Draw each square if it should be drawn, and then clear it out after drawing
                     if (nextDisplay[i][j] != null) {
-                        fill(nextDisplay[i][j].getR(), nextDisplay[i][j].getG(), nextDisplay[i][j].getB());
+                        if (!heldThisRound)
+                            fill(nextDisplay[i][j].getR(), nextDisplay[i][j].getG(), nextDisplay[i][j].getB());
+                        else
+                            fill(DisplayColor.HOLD.getR(), DisplayColor.HOLD.getG(), DisplayColor.HOLD.getB());
+
                         noStroke();
                         rect(x + j * Board.tileSize, y - i * Board.tileSize, Board.tileSize, Board.tileSize);
                         nextDisplay[i][j] = null;
