@@ -2,6 +2,9 @@ package tertis;
 
 import processing.core.*;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class Tertis extends PApplet {
     public void setup() {
         frameRate((float) Board.fps);
@@ -44,8 +47,12 @@ public class Tertis extends PApplet {
         if (Board.next.size() < Board.bagSize)
             Board.generateBag();
 
+        // Hold
+        if (Key.frame("q") != null && Key.frame("q") == frameCount - 1)
+            Piece.testPiece = Piece.hold(Piece.testPiece);
+
         if (Piece.testPiece == null) {
-            System.out.println("Generating new " + Board.next.peek() + " piece");
+            //System.out.println("Generating new " + Board.next.peek() + " piece");
             Piece.testPiece = new Piece(Board.next.remove());
         }
 
@@ -68,9 +75,6 @@ public class Tertis extends PApplet {
             while (p.move(Direction.DOWN));
             lockPiece = true;
         }
-        // Lock test
-        if (Key.frame("q") != null && Key.frame("q") == frameCount - 1)
-            lockPiece = true;
 
         // Rotations
         if (Key.frame("37") != null && Key.frame("37") == frameCount - 1)
@@ -80,14 +84,15 @@ public class Tertis extends PApplet {
         if (Key.frame("39") != null && Key.frame("39") == frameCount - 1)
             p.rotate(Rotation.CLOCKWISE);
 
-            Piece.renderGhost(p);
-            p.display();
+        Piece.renderGhost(p);
+        p.display();
 
-            if (lockPiece) {
-                Piece.lock(Piece.testPiece);
-                Piece.testPiece = null;
-            }
+        if (lockPiece) {
+            Piece.lock(Piece.testPiece);
+            Piece.testPiece = null;
+        }
 
+        Board.lineClear();
         drawBoard();
         keyTestDraw();
     }
@@ -96,7 +101,7 @@ public class Tertis extends PApplet {
         float keyWidth = 50;
 
         float keyOverlayX = 90;
-        float keyOverlayY = 250;
+        float keyOverlayY = 350;
 
         // I like spaghetti
         rectMode(CORNER);
@@ -158,44 +163,120 @@ public class Tertis extends PApplet {
     public void drawBoard() {
         float boardX = 480;
         float boardY = 670;
-        float tileSize = 30;
 
         // Draw grid dots? I think?
         for (int i = 0; i <= Board.displayBoardHeight; i++) {
             for (int j = 0; j <= Board.boardWidth; j++) {
                 strokeWeight(2);
                 stroke(128);
-                point((boardX - tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * tileSize) - tileSize / 2, (boardY - i * tileSize) + tileSize / 2);
+                point((boardX - Board.tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * Board.tileSize) - Board.tileSize / 2, (boardY - i * Board.tileSize) + Board.tileSize / 2);
             }
         }
 
+        rectMode(CENTER);
         for (int i = 0; i < Board.displayBoardHeight; i++) {
             for (int j = 0; j < Board.boardWidth; j++) {
-                rectMode(CENTER);
-
                 // Draw square if square exists
                 if (Board.displayBoard[i][j] != null) {
                     fill(Board.displayBoard[i][j].getR(), Board.displayBoard[i][j].getG(), Board.displayBoard[i][j].getB(), Board.displayBoard[i][j].getA());
                     noStroke();
-                    rect(boardX - tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * tileSize, boardY - i * tileSize, tileSize, tileSize);
+                    rect(boardX - Board.tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * Board.tileSize, boardY - i * Board.tileSize, Board.tileSize, Board.tileSize);
                 }
 
                 // Draw points at center of all cells
                 //strokeWeight(5);
                 //stroke(255);
-                //point(boardX - tileSize * ((boardWidth / 2.0) - 0.5 ) + j * tileSize, boardY - i * tileSize);
+                //point(boardX - Board.tileSize * ((boardWidth / 2.0) - 0.5 ) + j * Board.tileSize, boardY - i * Board.tileSize);
             }
         }
 
         // Black out the space above the grid and draw the border around the play area
         rectMode(CORNERS);
         fill(0);
-        rect(0, 0, width, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * tileSize);
+        rect(0, 0, width, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * Board.tileSize);
         strokeWeight(3);
         stroke(128);
         fill(0, 0, 0, 0);
-        rect(boardX + tileSize * Board.boardWidth / 2 + 1, boardY + tileSize / 2 + 1,
-             boardX - tileSize * Board.boardWidth / 2 - 2, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * tileSize);
+        rect(boardX + Board.tileSize * Board.boardWidth / 2 + 1, boardY + Board.tileSize / 2 + 1,
+             boardX - Board.tileSize * Board.boardWidth / 2 - 2, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * Board.tileSize);
+
+        // Draw preview pieces + hold
+        stroke(0, 255, 0);
+        strokeWeight(5);
+        Queue<Character> nextCopy = new ArrayDeque<>(Board.next);
+        for (int i = 0; i < Board.previews; i++)
+            drawPreview(700, 160 + i * 3 * Board.tileSize, nextCopy.remove());
+        if (Board.hold != null)
+            drawPreview(200, 160, Board.hold);
+    }
+
+    public void drawPreview(float x, float y, char type) {
+        DisplayColor[][] miniDisplay = new DisplayColor[Board.previewRows][Board.previewCols];
+
+        switch (type) {
+            case 'I' -> {
+                miniDisplay[0][0] = DisplayColor.I;
+                miniDisplay[0][1] = DisplayColor.I;
+                miniDisplay[0][2] = DisplayColor.I;
+                miniDisplay[0][3] = DisplayColor.I;
+            }
+
+            case 'O' -> {
+                miniDisplay[1][1] = DisplayColor.O;
+                miniDisplay[1][2] = DisplayColor.O;
+                miniDisplay[0][1] = DisplayColor.O;
+                miniDisplay[0][2] = DisplayColor.O;
+            }
+
+            case 'T' -> {
+                miniDisplay[1][1] = DisplayColor.T;
+                miniDisplay[0][0] = DisplayColor.T;
+                miniDisplay[0][1] = DisplayColor.T;
+                miniDisplay[0][2] = DisplayColor.T;
+            }
+
+            case 'S' -> {
+                miniDisplay[1][1] = DisplayColor.S;
+                miniDisplay[1][2] = DisplayColor.S;
+                miniDisplay[0][0] = DisplayColor.S;
+                miniDisplay[0][1] = DisplayColor.S;
+            }
+
+            case 'Z' -> {
+                miniDisplay[1][0] = DisplayColor.Z;
+                miniDisplay[1][1] = DisplayColor.Z;
+                miniDisplay[0][1] = DisplayColor.Z;
+                miniDisplay[0][2] = DisplayColor.Z;
+            }
+
+            case 'J' -> {
+                miniDisplay[1][0] = DisplayColor.J;
+                miniDisplay[0][0] = DisplayColor.J;
+                miniDisplay[0][1] = DisplayColor.J;
+                miniDisplay[0][2] = DisplayColor.J;
+            }
+
+            case 'L' -> {
+                miniDisplay[1][2] = DisplayColor.L;
+                miniDisplay[0][0] = DisplayColor.L;
+                miniDisplay[0][1] = DisplayColor.L;
+                miniDisplay[0][2] = DisplayColor.L;
+            }
+        }
+
+        try {
+            rectMode(CENTER);
+            for (int i = 0; i < Board.previewRows; i++) {
+                for (int j = 0; j < Board.previewCols; j++) {
+                    if (miniDisplay[i][j] != null) {
+                        fill(miniDisplay[i][j].getR(), miniDisplay[i][j].getG(), miniDisplay[i][j].getB());
+                        noStroke();
+                        rect(x + j * Board.tileSize, y - i * Board.tileSize, Board.tileSize, Board.tileSize);
+                        miniDisplay[i][j] = null;
+                    }
+                }
+            }
+        } catch (NullPointerException ignored) {}
     }
 
     public void settings() {

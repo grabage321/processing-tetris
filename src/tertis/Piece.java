@@ -1,6 +1,7 @@
 package tertis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class Piece {
     public static Piece testPiece;
@@ -357,7 +358,7 @@ public class Piece {
 
         // Add the dropped ghost piece's tiles into the array keeping track
         for (Tile i : ghost.tiles)
-            Piece.prevGhostTiles.add(new Tile(i.getRow(), i.getCol()));
+            prevGhostTiles.add(new Tile(i.getRow(), i.getCol()));
 
         // Render it :)
         ghost.display();
@@ -368,6 +369,14 @@ public class Piece {
             Board.board[i.getRow()][i.getCol()] = 1;
             Board.displayBoard[i.getRow()][i.getCol()] = piece.dc;
         }
-        Piece.prevGhostTiles.clear();
+        prevGhostTiles.clear();
+    }
+
+    public static Piece hold(Piece piece) {
+        prevGhostTiles.addAll(Arrays.asList(piece.tiles));
+
+        Character temp = Board.hold;
+        Board.hold = piece.getType();
+        return (temp == null)? null : new Piece(temp);
     }
 }
