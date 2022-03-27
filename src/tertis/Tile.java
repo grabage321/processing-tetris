@@ -1,5 +1,8 @@
 package tertis;
 
+/**
+ * Basically just stores a pair of grid coordinates and nothing else.
+ */
 public class Tile {
     private int row;
     private int col;

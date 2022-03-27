@@ -1,5 +1,8 @@
 package tertis;
 
+/**
+ * Enum for the different colors that can be displayed on the board.
+ */
 public enum DisplayColor {
     I(15, 155, 215),
     O(227, 159, 2),
@@ -16,31 +19,24 @@ public enum DisplayColor {
     GJ(33, 65, 198, true),
     GL(227, 91, 2, true);
 
-    public static final int ghostAlpha;
     private final int r;
     private final int g;
     private final int b;
     private final int a;
-    private final boolean isGhost;
+    // Repeated number because I don't know what I'm doingQ
+    public static final int ghostAlpha = 128;
 
-    static {
-        ghostAlpha = 128;
+    // Non-ghost constructor
+    DisplayColor(int r, int g, int b) {
+        this(r, g, b, false);
     }
 
-    private DisplayColor(int r, int g, int b) {
+    DisplayColor(int r, int g, int b, boolean isGhost) {
         this.r = r;
         this.g = g;
         this.b = b;
-        this.a = 255;
-        this.isGhost = false;
-    }
 
-    private DisplayColor(int r, int g, int b, boolean isGhost) {
-        this.r = r;
-        this.g = g;
-        this.b = b;
-        this.isGhost = isGhost;
-
+        // Set this.a to ghost alpha if isGhost
         if (isGhost)
             this.a = 128;
         else
@@ -61,9 +57,5 @@ public enum DisplayColor {
 
     public int getA() {
         return this.a;
-    }
-
-    public boolean isGhost() {
-        return this.isGhost;
     }
 }

@@ -5,23 +5,31 @@ import java.util.Arrays;
 
 public class Piece {
     public static Piece testPiece;
-    //public static Piece ghost;
     public static ArrayList<Tile> prevGhostTiles = new ArrayList<>();
 
     private int row;
     private int col;
-    private char type;
+    private final char type;
     private DisplayColor dc;
     public Tile[] tiles = new Tile[4];
 
     /**
-     * Biiig constructor. Does everything. Might even be able to answer the question of life, the
-     * universe, and everything, but I haven't tested it.
+     * Constructs a piece at the location specified within each constructor case. The display color
+     * of the piece is set to be either the regular or ghost color, depending on the case of the
+     * char given as the type argument.
      *
      * @param type Piece type
      */
     public Piece(char type) {
         switch (type) {
+            /*
+             * Each case here contains a guide, with the tiles initialized in the order a, b, c, d.
+             * The capitalized letter represents where the piece's position is considered to be.
+             *
+             * The row and column are set to represent the piece's initial spawn location, and then
+             * each element in the tiles array is set to a location relative to the "center" tile.
+             */
+
             case 'I', 'i' -> {
                 // abCd
 
@@ -29,6 +37,7 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 5;
+
                 tiles[0] = new Tile(row, col - 2);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
@@ -43,6 +52,7 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
+
                 tiles[0] = new Tile(row + 1, col);
                 tiles[1] = new Tile(row + 1, col + 1);
                 tiles[2] = new Tile(row, col);
@@ -57,6 +67,7 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
+
                 tiles[0] = new Tile(row + 1, col);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
@@ -71,6 +82,7 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
+
                 tiles[0] = new Tile(row + 1, col + 1);
                 tiles[1] = new Tile(row + 1, col);
                 tiles[2] = new Tile(row, col - 1);
@@ -85,6 +97,7 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
+
                 tiles[0] = new Tile(row + 1, col - 1);
                 tiles[1] = new Tile(row + 1, col);
                 tiles[2] = new Tile(row, col);
@@ -99,6 +112,7 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
+
                 tiles[0] = new Tile(row + 1, col - 1);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
@@ -113,6 +127,7 @@ public class Piece {
 
                 this.row = 20;
                 this.col = 4;
+
                 tiles[0] = new Tile(row + 1, col + 1);
                 tiles[1] = new Tile(row, col - 1);
                 tiles[2] = new Tile(row, col);
@@ -120,21 +135,20 @@ public class Piece {
             }
         }
 
+        // Finally, update type field
         this.type = type;
     }
 
     /**
-     * Go through tiles and put them on the display board.
+     * Go through tiles and put each one on the display board.
      */
     public void display() {
-        for (Tile i : tiles) {
-            //System.out.println("Display: (" + i.getRow() + ", " + i.getCol() + ")");
+        for (Tile i : tiles)
             Board.displayBoard[i.getRow()][i.getCol()] = this.dc;
-        }
     }
 
     /**
-     * Go through tiles and erase them from the display board.
+     * Go through tiles and erase each one from the display board.
      */
     public void clear() {
         for (Tile i : tiles)
@@ -150,13 +164,17 @@ public class Piece {
         // Allow rotation if the piece isn't an O
         boolean canRot = Character.toUpperCase(this.type) != 'O';
 
+        // Rotation checking process
         for (Tile i : tiles) {
             // Enable special rotation offset for I piece
             double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
-            // Initialize row and col variables in the rotated spots
+
+            // Initialize row and col variables (clockwise rotation)
             int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
             int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
 
+            // Set row and col variables to counter-clockwise or 180 degree rotations based on what
+            // was chosen
             switch (rotation) {
                 case COUNTERCLOCKWISE -> {
                     r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
@@ -168,24 +186,23 @@ public class Piece {
                 }
             }
 
-            //System.out.print("(" + i.getRow() + ", " + i.getCol() + ") -> ");
-            //System.out.print("(" + (this.row - i.getRow()) + ", " + (this.col - i.getCol()) + ") -> ");
-            //System.out.println("(" + r + ", " + c + ")");
-
-            // Check each rotated image for a collision if its index is in bounds
-            if (r >= 0 && r <= Board.boardHeight - 1 && c >= 0 && c <= Board.boardWidth - 1)
+            if (r >= 0 && r <= Board.boardHeight - 1 && c >= 0 && c <= Board.boardWidth - 1) {
+                // Check each tile's rotated image for a collision (if its index is within bounds)
                 canRot &= Board.board[r][c] != 1;
-            else {
+            } else {
+                // If the index is not in bounds, the rotation fails
                 canRot = false;
-                //System.out.println("Failed");
             }
         }
 
+        // Piece rotation (if check was successful)
         if (canRot) {
+            // Clear all display tiles before actually rotating
             this.clear();
 
+            // Actually rotate
             for (Tile i : tiles) {
-                // Actually rotate the tiles
+                // Same coordinate initialization as before
                 double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
                 int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
                 int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
@@ -201,6 +218,7 @@ public class Piece {
                     }
                 }
 
+                // Set this tile's new coordinates
                 i.setRow(r);
                 i.setCol(c);
             }
@@ -209,6 +227,8 @@ public class Piece {
 
     /**
      * Checks if the piece can move up, down, left, or right.
+     * <p>
+     * Basically just an alias for {@code move(Direction, false)}.
      *
      * @param direction direction to check the piece
      * @return {@code true} if the move is possible
@@ -221,6 +241,8 @@ public class Piece {
      * Moves the piece down, left, or right.
      * <p>
      * It can also do up, but we don't speak of that.
+     * <p>
+     * Basically just an alias for {@code move(Direction, true)}.
      *
      * @param direction direction to move the piece
      * @return {@code true} if the move was successful
@@ -242,6 +264,11 @@ public class Piece {
         boolean canMove = true;
 
         switch (direction) {
+            /*
+             * Each case can be broken down into two parts: check if the piece can be moved in the
+             * given direction, and move the piece in the given direction (if movePiece is true).
+             */
+
             case UP -> {
                 for (Tile i : this.tiles) {
                     if (i.getRow() != Board.displayBoardHeight - 1)
@@ -257,6 +284,7 @@ public class Piece {
                     this.row += 1;
                 }
             }
+
             case DOWN -> {
                 for (Tile i : this.tiles) {
                     if (i.getRow() != 0)
@@ -272,6 +300,7 @@ public class Piece {
                     this.row -= 1;
                 }
             }
+
             case LEFT -> {
                 for (Tile i : this.tiles) {
                     if (i.getCol() != 0)
@@ -287,6 +316,7 @@ public class Piece {
                     this.col -= 1;
                 }
             }
+
             case RIGHT -> {
                 for (Tile i : this.tiles) {
                     if (i.getCol() != Board.boardWidth - 1)
@@ -304,6 +334,7 @@ public class Piece {
             }
         }
 
+        // Return whether the piece could move
         return canMove;
     }
 
@@ -336,27 +367,28 @@ public class Piece {
      * @param piece Piece being ghosted lol
      */
     public static void renderGhost(Piece piece) {
-        // New ghosty version of piece
+        // Create new ghosty version of piece
         Piece ghost = new Piece(Character.toLowerCase(piece.getType()));
 
-        // Clear the tiles from the previous ghost piece, and then reset the array keeping track
-        // TODO: Make sure this doesn't run on piece lock
+        // Clear the tiles from the previous ghost piece, and then reset the array keeping track of
+        // ghost piece tiles
         for (Tile i : prevGhostTiles)
             Board.displayBoard[i.getRow()][i.getCol()] = null;
         prevGhostTiles.clear();
 
-        // Copy the real piece's tiles into the ghost piece, then update the ghost piece's position
+        // Copy the real piece's tiles into the ghost piece's tiles
         for (int i = 0; i < Piece.testPiece.tiles.length; i++) {
             ghost.tiles[i].setRow(Piece.testPiece.tiles[i].getRow());
             ghost.tiles[i].setCol(Piece.testPiece.tiles[i].getCol());
         }
+        // Update the ghost piece's position to match the given piece
         ghost.row = Piece.testPiece.getRow();
         ghost.col = Piece.testPiece.getCol();
 
         // Essentially hard drop the ghost piece
         while (ghost.move(Direction.DOWN));
 
-        // Add the dropped ghost piece's tiles into the array keeping track
+        // Now, add the ghost piece's tiles into the array keeping track of ghost piece tiles
         for (Tile i : ghost.tiles)
             prevGhostTiles.add(new Tile(i.getRow(), i.getCol()));
 
@@ -365,16 +397,22 @@ public class Piece {
     }
 
     public static void lock(Piece piece) {
+        // Add each tile's position to the board (display and actual)
         for (Tile i : piece.tiles) {
             Board.board[i.getRow()][i.getCol()] = 1;
             Board.displayBoard[i.getRow()][i.getCol()] = piece.dc;
         }
+
+        // Clear out the array used for ghost piece tiles
         prevGhostTiles.clear();
     }
 
     public static Piece hold(Piece piece) {
+        // Add the piece's tiles to the ghost piece tile array, because it's a convenient way to
+        // make sure the piece being swapped out is also cleared from the display board
         prevGhostTiles.addAll(Arrays.asList(piece.tiles));
 
+        // Essentially swap the held piece and the current piece
         Character temp = Board.hold;
         Board.hold = piece.getType();
         return (temp == null)? null : new Piece(temp);

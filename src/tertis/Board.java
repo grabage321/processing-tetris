@@ -4,6 +4,7 @@ import processing.core.*;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Queue;
 
 import static java.util.Collections.swap;
@@ -29,53 +30,58 @@ public class Board extends PApplet {
     public static Queue<Character> next = new ArrayDeque<>();
     public static Character hold = null;
 
+    /**
+     * Generates a randomly permuted "bag" of pieces and adds them to the next queue.
+     */
     public static void generateBag() {
-        ArrayList<Character> pieces = new ArrayList<>();
+        // Initialize bag of pieces
+        ArrayList<Character> pieces = new ArrayList<>(
+                Arrays.asList('I', 'O', 'T', 'S', 'Z', 'J', 'L')
+        );
 
-        pieces.add('I');
-        pieces.add('O');
-        pieces.add('T');
-        pieces.add('S');
-        pieces.add('Z');
-        pieces.add('J');
-        pieces.add('L');
-
+        // Fisher-Yates shuffle I guess? Thanks, Wikipedia.
         for (int i = 0; i < pieces.size() - 2; i++) {
             int j = floor(i + (float) (Math.random() * (pieces.size() - i)));
             swap(pieces, i, j);
         }
 
-        for (Character i : pieces) {
-            System.out.print(i + ", ");
-            next.offer(i);
-        }
-
-        System.out.println();
+        // Add each piece to the queue
+        next.addAll(pieces);
     }
 
+    /**
+     * @return line number of a full line, {@code -1} if none exist
+     */
     private static int fullLine() {
         for (int i = 0; i < boardHeight; i++) {
             boolean lineFull = true;
 
+            // & all the elements in row i
             for (int j = 0; j < boardWidth; j++)
                 lineFull &= board[i][j] == 1;
 
+            // Return the line number if a full line is found
             if (lineFull)
                 return i;
         }
 
+        // Return -1 if no lines were full
         return -1;
     }
 
+    /**
+     * Function for handling line clearing logic. If a line is full, it will be deleted and all
+     * lines above it will be moved down.
+     */
     public static void lineClear() {
-        if (fullLine() != -1)
-            System.out.println(fullLine());
         while (fullLine() >= 0) {
+            // Copy all the lines above the full row down 1 (display and actual)
             for (int i = fullLine(); i < boardHeight - 1; i++) {
                 arrayCopy(board[i + 1], board[i]);
                 arrayCopy(displayBoard[i + 1], displayBoard[i]);
             }
 
+            // Clear out the top row (display and actual)
             for (int i = 0; i < boardWidth; i++) {
                 board[boardHeight - 1][i] = 0;
                 displayBoard[boardHeight - 1][i] = null;

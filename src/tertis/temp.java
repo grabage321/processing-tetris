@@ -1,5 +1,8 @@
 package tertis;
 
+/**
+ * Good ol' temp class.
+ */
 public class temp {
     public static void testPieceSetup() {
         //Board.displayBoard[0][9] = DisplayColor.I;

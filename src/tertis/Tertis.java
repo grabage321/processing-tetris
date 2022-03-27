@@ -9,21 +9,22 @@ public class Tertis extends PApplet {
     public void setup() {
         frameRate((float) Board.fps);
 
-        temp.testPieceSetup();
+        //temp.testPieceSetup();
     }
 
     public void keyPressed() {
         String keyString;
 
+        // Set keyString to either the key's text or the keyCode as a string
         if (key == CODED)
             keyString = String.valueOf(keyCode);
         else
             keyString = String.valueOf(key).toLowerCase();
 
-
         if (Key.keys.get(keyString) != null && Key.keys.get(keyString)) {
-            //nothing
+            // Nothing if the key is still being held
         } else {
+            // Set keys value to true, and put the current frame number in keyFrame
             Key.keyFrame.put(keyString, frameCount);
             Key.keys.put(keyString, Boolean.TRUE);
         }
@@ -32,18 +33,20 @@ public class Tertis extends PApplet {
     public void keyReleased() {
         String keyString;
 
+        // Set keyString to either the key's text or the keyCode as a string
         if (key == CODED)
             keyString = String.valueOf(keyCode).toLowerCase();
         else
             keyString = String.valueOf(key).toLowerCase();
 
-
+        // Set keys value to false
         Key.keys.put(keyString, Boolean.FALSE);
     }
 
     public void draw() {
         background(0);
 
+        // If the queue has less than 7 pieces, add a new bag's worth of pieces
         if (Board.next.size() < Board.bagSize)
             Board.generateBag();
 
@@ -63,13 +66,13 @@ public class Tertis extends PApplet {
         // Directional moves
         if (Key.repeat("w", frameCount))
             p.move(Direction.UP);
-        if (Key.repeat("s", frameCount))
-            while (p.move(Direction.DOWN));
-            //p.move(Direction.DOWN);
         if (Key.repeat("a", frameCount))
             p.move(Direction.LEFT);
         if (Key.repeat("d", frameCount))
             p.move(Direction.RIGHT);
+        // Soft drop
+        if (Key.repeat("s", frameCount))
+            while (p.move(Direction.DOWN));
         // Hard drop
         if (Key.frame(" ") != null && Key.frame(" ") == frameCount - 1) {
             while (p.move(Direction.DOWN));
@@ -103,7 +106,7 @@ public class Tertis extends PApplet {
         float keyOverlayX = 90;
         float keyOverlayY = 350;
 
-        // I like spaghetti
+        // Fill each key in the overlay if it is pressed
         rectMode(CORNER);
 
         noStroke();
@@ -129,7 +132,7 @@ public class Tertis extends PApplet {
         if (Key.keys.get("39") != null && Key.keys.get("39"))
             rect(keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 5, keyWidth - 2, keyWidth - 2);
 
-        // Something 1
+        // Key overlay squares
         strokeWeight(1);
         stroke(128);
         noFill();
@@ -145,7 +148,7 @@ public class Tertis extends PApplet {
         rect(keyOverlayX + keyWidth - 1,     keyOverlayY + keyWidth * 5 - 1, keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX + keyWidth * 2 - 1, keyOverlayY + keyWidth * 5 - 1, keyWidth - 1, keyWidth - 1);
 
-        // Something 2
+        // Key overlay text
         fill(128);
 
         text("Q", keyOverlayX, keyOverlayY + keyWidth - 5);
@@ -200,7 +203,7 @@ public class Tertis extends PApplet {
         rect(boardX + Board.tileSize * Board.boardWidth / 2 + 1, boardY + Board.tileSize / 2 + 1,
              boardX - Board.tileSize * Board.boardWidth / 2 - 2, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * Board.tileSize);
 
-        // Draw preview pieces + hold
+        // Draw preview pieces + hold piece
         stroke(0, 255, 0);
         strokeWeight(5);
         Queue<Character> nextCopy = new ArrayDeque<>(Board.next);
@@ -211,56 +214,61 @@ public class Tertis extends PApplet {
     }
 
     public void drawPreview(float x, float y, char type) {
-        DisplayColor[][] miniDisplay = new DisplayColor[Board.previewRows][Board.previewCols];
+        // Initialize grid used for storing next queue piece tiles
+        DisplayColor[][] nextDisplay = new DisplayColor[Board.previewRows][Board.previewCols];
 
         switch (type) {
+            /*
+             * Each case sets the cells in nextDisplay based on the given piece
+             */
+
             case 'I' -> {
-                miniDisplay[0][0] = DisplayColor.I;
-                miniDisplay[0][1] = DisplayColor.I;
-                miniDisplay[0][2] = DisplayColor.I;
-                miniDisplay[0][3] = DisplayColor.I;
+                nextDisplay[0][0] = DisplayColor.I;
+                nextDisplay[0][1] = DisplayColor.I;
+                nextDisplay[0][2] = DisplayColor.I;
+                nextDisplay[0][3] = DisplayColor.I;
             }
 
             case 'O' -> {
-                miniDisplay[1][1] = DisplayColor.O;
-                miniDisplay[1][2] = DisplayColor.O;
-                miniDisplay[0][1] = DisplayColor.O;
-                miniDisplay[0][2] = DisplayColor.O;
+                nextDisplay[1][1] = DisplayColor.O;
+                nextDisplay[1][2] = DisplayColor.O;
+                nextDisplay[0][1] = DisplayColor.O;
+                nextDisplay[0][2] = DisplayColor.O;
             }
 
             case 'T' -> {
-                miniDisplay[1][1] = DisplayColor.T;
-                miniDisplay[0][0] = DisplayColor.T;
-                miniDisplay[0][1] = DisplayColor.T;
-                miniDisplay[0][2] = DisplayColor.T;
+                nextDisplay[1][1] = DisplayColor.T;
+                nextDisplay[0][0] = DisplayColor.T;
+                nextDisplay[0][1] = DisplayColor.T;
+                nextDisplay[0][2] = DisplayColor.T;
             }
 
             case 'S' -> {
-                miniDisplay[1][1] = DisplayColor.S;
-                miniDisplay[1][2] = DisplayColor.S;
-                miniDisplay[0][0] = DisplayColor.S;
-                miniDisplay[0][1] = DisplayColor.S;
+                nextDisplay[1][1] = DisplayColor.S;
+                nextDisplay[1][2] = DisplayColor.S;
+                nextDisplay[0][0] = DisplayColor.S;
+                nextDisplay[0][1] = DisplayColor.S;
             }
 
             case 'Z' -> {
-                miniDisplay[1][0] = DisplayColor.Z;
-                miniDisplay[1][1] = DisplayColor.Z;
-                miniDisplay[0][1] = DisplayColor.Z;
-                miniDisplay[0][2] = DisplayColor.Z;
+                nextDisplay[1][0] = DisplayColor.Z;
+                nextDisplay[1][1] = DisplayColor.Z;
+                nextDisplay[0][1] = DisplayColor.Z;
+                nextDisplay[0][2] = DisplayColor.Z;
             }
 
             case 'J' -> {
-                miniDisplay[1][0] = DisplayColor.J;
-                miniDisplay[0][0] = DisplayColor.J;
-                miniDisplay[0][1] = DisplayColor.J;
-                miniDisplay[0][2] = DisplayColor.J;
+                nextDisplay[1][0] = DisplayColor.J;
+                nextDisplay[0][0] = DisplayColor.J;
+                nextDisplay[0][1] = DisplayColor.J;
+                nextDisplay[0][2] = DisplayColor.J;
             }
 
             case 'L' -> {
-                miniDisplay[1][2] = DisplayColor.L;
-                miniDisplay[0][0] = DisplayColor.L;
-                miniDisplay[0][1] = DisplayColor.L;
-                miniDisplay[0][2] = DisplayColor.L;
+                nextDisplay[1][2] = DisplayColor.L;
+                nextDisplay[0][0] = DisplayColor.L;
+                nextDisplay[0][1] = DisplayColor.L;
+                nextDisplay[0][2] = DisplayColor.L;
             }
         }
 
@@ -268,15 +276,16 @@ public class Tertis extends PApplet {
             rectMode(CENTER);
             for (int i = 0; i < Board.previewRows; i++) {
                 for (int j = 0; j < Board.previewCols; j++) {
-                    if (miniDisplay[i][j] != null) {
-                        fill(miniDisplay[i][j].getR(), miniDisplay[i][j].getG(), miniDisplay[i][j].getB());
+                    // Draw each square if it should be drawn, and then clear it out after drawing
+                    if (nextDisplay[i][j] != null) {
+                        fill(nextDisplay[i][j].getR(), nextDisplay[i][j].getG(), nextDisplay[i][j].getB());
                         noStroke();
                         rect(x + j * Board.tileSize, y - i * Board.tileSize, Board.tileSize, Board.tileSize);
-                        miniDisplay[i][j] = null;
+                        nextDisplay[i][j] = null;
                     }
                 }
             }
-        } catch (NullPointerException ignored) {}
+        } catch (NullPointerException ignored) {} // Weird NullPointerException idk
     }
 
     public void settings() {
