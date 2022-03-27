@@ -13,6 +13,12 @@ public class Piece {
     private DisplayColor dc;
     public Tile[] tiles = new Tile[4];
 
+    /**
+     * Biiig constructor. Does everything. Might even be able to answer the question of life, the
+     * universe, and everything, but I haven't tested it.
+     *
+     * @param type Piece type
+     */
     public Piece(char type) {
         switch (type) {
             case 'I', 'i' -> {
@@ -27,6 +33,7 @@ public class Piece {
                 tiles[2] = new Tile(row, col);
                 tiles[3] = new Tile(row, col + 1);
             }
+
             case 'O', 'o' -> {
                 // ab
                 // Cd
@@ -40,6 +47,7 @@ public class Piece {
                 tiles[2] = new Tile(row, col);
                 tiles[3] = new Tile(row, col + 1);
             }
+
             case 'T', 't' -> {
                 //  a
                 // bCd
@@ -53,6 +61,7 @@ public class Piece {
                 tiles[2] = new Tile(row, col);
                 tiles[3] = new Tile(row, col + 1);
             }
+
             case 'S', 's' -> {
                 //  ab
                 // cD
@@ -66,6 +75,7 @@ public class Piece {
                 tiles[2] = new Tile(row, col - 1);
                 tiles[3] = new Tile(row, col);
             }
+
             case 'Z', 'z' -> {
                 // ab
                 //  Cd
@@ -79,6 +89,7 @@ public class Piece {
                 tiles[2] = new Tile(row, col);
                 tiles[3] = new Tile(row, col + 1);
             }
+
             case 'J', 'j' -> {
                 // a
                 // bCd
@@ -92,6 +103,7 @@ public class Piece {
                 tiles[2] = new Tile(row, col);
                 tiles[3] = new Tile(row, col + 1);
             }
+
             case 'L', 'l' -> {
                 //   a
                 // bCd
@@ -195,6 +207,16 @@ public class Piece {
     }
 
     /**
+     * Checks if the piece can move up, down, left, or right.
+     *
+     * @param direction direction to check the piece
+     * @return {@code true} if the move is possible
+     */
+    public boolean canMove(Direction direction) {
+        return this.move(direction, false);
+    }
+
+    /**
      * Moves the piece down, left, or right.
      * <p>
      * It can also do up, but we don't speak of that.
@@ -203,6 +225,19 @@ public class Piece {
      * @return {@code true} if the move was successful
      */
     public boolean move(Direction direction) {
+        return this.move(direction, true);
+    }
+
+    /**
+     * Moves or checks if the piece can move down, left, or right.
+     * <p>
+     * It can also do up, but we don't speak of that.
+     *
+     * @param direction direction to move/check the piece
+     * @param movePiece whether to actually move the piece. {@code true} if not specified.
+     * @return {@code true} if the move is possible / was successful
+     */
+    public boolean move(Direction direction, boolean movePiece) {
         boolean canMove = true;
 
         switch (direction) {
@@ -214,7 +249,7 @@ public class Piece {
                         canMove = false;
                 }
 
-                if (canMove) {
+                if (canMove && movePiece) {
                     this.clear();
                     for (Tile i : this.tiles)
                         i.setRow(i.getRow() + 1);
@@ -229,7 +264,7 @@ public class Piece {
                         canMove = false;
                 }
 
-                if (canMove) {
+                if (canMove && movePiece) {
                     this.clear();
                     for (Tile i : this.tiles)
                         i.setRow(i.getRow() - 1);
@@ -244,7 +279,7 @@ public class Piece {
                         canMove = false;
                 }
 
-                if (canMove) {
+                if (canMove && movePiece) {
                     this.clear();
                     for (Tile i : this.tiles)
                         i.setCol(i.getCol() - 1);
@@ -259,7 +294,7 @@ public class Piece {
                         canMove = false;
                 }
 
-                if (canMove) {
+                if (canMove && movePiece) {
                     this.clear();
                     for (Tile i : this.tiles)
                         i.setCol(i.getCol() + 1);
@@ -326,5 +361,13 @@ public class Piece {
 
         // Render it :)
         ghost.display();
+    }
+
+    public static void lock(Piece piece) {
+        for (Tile i : piece.tiles) {
+            Board.board[i.getRow()][i.getCol()] = 1;
+            Board.displayBoard[i.getRow()][i.getCol()] = piece.dc;
+        }
+        Piece.prevGhostTiles.clear();
     }
 }

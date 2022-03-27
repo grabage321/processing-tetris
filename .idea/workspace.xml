@@ -3,8 +3,10 @@
   <component name="ChangeListManager">
     <list default="true" id="175dc16d-6f0d-4d2c-86b4-0ce77bb5ae02" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/tertis/Key.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tertis/Key.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tertis/Board.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tertis/Board.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tertis/Piece.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tertis/Piece.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/tertis/Tertis.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tertis/Tertis.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/tertis/temp.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/tertis/temp.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

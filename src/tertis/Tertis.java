@@ -41,33 +41,52 @@ public class Tertis extends PApplet {
     public void draw() {
         background(0);
 
+        if (Board.next.size() < Board.bagSize)
+            Board.generateBag();
+
+        if (Piece.testPiece == null) {
+            System.out.println("Generating new " + Board.next.peek() + " piece");
+            Piece.testPiece = new Piece(Board.next.remove());
+        }
+
         Piece p = Piece.testPiece;
 
-        if (p != null) {
-            // Directional moves
-            if (Key.repeat("w", frameCount))
-                p.move(Direction.UP);
-            if (Key.repeat("s", frameCount))
-                p.move(Direction.DOWN);
-            if (Key.repeat("a", frameCount))
-                p.move(Direction.LEFT);
-            if (Key.repeat("d", frameCount))
-                p.move(Direction.RIGHT);
-            // Hard drop
-            if (Key.frame(" ") != null && Key.frame(" ") == frameCount - 1)
-                while (p.move(Direction.DOWN)) ;
+        boolean lockPiece = false;
 
-            // Rotations
-            if (Key.frame("37") != null && Key.frame("37") == frameCount - 1)
-                p.rotate(Rotation.COUNTERCLOCKWISE);
-            if (Key.frame("38") != null && Key.frame("38") == frameCount - 1)
-                p.rotate(Rotation.ONEEIGHTY);
-            if (Key.frame("39") != null && Key.frame("39") == frameCount - 1)
-                p.rotate(Rotation.CLOCKWISE);
+        // Directional moves
+        if (Key.repeat("w", frameCount))
+            p.move(Direction.UP);
+        if (Key.repeat("s", frameCount))
+            while (p.move(Direction.DOWN));
+            //p.move(Direction.DOWN);
+        if (Key.repeat("a", frameCount))
+            p.move(Direction.LEFT);
+        if (Key.repeat("d", frameCount))
+            p.move(Direction.RIGHT);
+        // Hard drop
+        if (Key.frame(" ") != null && Key.frame(" ") == frameCount - 1) {
+            while (p.move(Direction.DOWN));
+            lockPiece = true;
+        }
+        // Lock test
+        if (Key.frame("q") != null && Key.frame("q") == frameCount - 1)
+            lockPiece = true;
+
+        // Rotations
+        if (Key.frame("37") != null && Key.frame("37") == frameCount - 1)
+            p.rotate(Rotation.COUNTERCLOCKWISE);
+        if (Key.frame("38") != null && Key.frame("38") == frameCount - 1)
+            p.rotate(Rotation.ONEEIGHTY);
+        if (Key.frame("39") != null && Key.frame("39") == frameCount - 1)
+            p.rotate(Rotation.CLOCKWISE);
 
             Piece.renderGhost(p);
             p.display();
-        }
+
+            if (lockPiece) {
+                Piece.lock(Piece.testPiece);
+                Piece.testPiece = null;
+            }
 
         drawBoard();
         keyTestDraw();
