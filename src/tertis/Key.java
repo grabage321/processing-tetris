@@ -6,9 +6,12 @@ import java.util.HashMap;
 public class Key extends PApplet {
     public static HashMap<String, Boolean> keys = new HashMap<>();
     public static HashMap<String, Integer> keyFrame = new HashMap<>();
+    public static HashMap<String, String> keyBind = new HashMap<>();
 
-    public static float das = 100; // Delayed auto shift
-    public static float arr = 16.66667f; // Auto repeat rate
+    /*public static float das = 100; // Delayed auto shift
+    public static float arr = 16.66667f; // Auto repeat rate*/
+    public static float das = 8 * 16.66667f; // Delayed auto shift
+    public static float arr = 0.5f * 16.66667f; // Auto repeat rate
 
     /**
      * For returning a key's initial input, along with when the key's input should be repeated based
@@ -29,7 +32,7 @@ public class Key extends PApplet {
              */
             return frame(keyCode) == frameCount - 1
                     || ((frameCount - frame(keyCode) - das / Board.mspf >= 0)
-                    && (frameCount - frame(keyCode) - das / Board.mspf) % ((int) (arr / Board.mspf)) == 0);
+                    && (int) ((frameCount - frame(keyCode) - das / Board.mspf) % (arr / Board.mspf)) == 0);
         } else {
             return false;
         }

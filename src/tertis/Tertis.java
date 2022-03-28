@@ -10,6 +10,27 @@ public class Tertis extends PApplet {
         frameRate((float) Board.fps);
 
         //temp.testPieceSetup();
+
+        Key.keyBind.put("move_up",    "w");
+        Key.keyBind.put("move_down",  "s");
+        Key.keyBind.put("move_left",  "a");
+        Key.keyBind.put("move_right", "d");
+        Key.keyBind.put("move_drop",  " ");
+        Key.keyBind.put("move_hold",  "q");
+        Key.keyBind.put("rot_ccw",    "37");
+        Key.keyBind.put("rot_180",    "38");
+        Key.keyBind.put("rot_cw",     "39");
+
+        // Jonah controls
+//        Key.keyBind.put("move_up",    "w");
+//        Key.keyBind.put("move_down",  "40");
+//        Key.keyBind.put("move_left",  "37");
+//        Key.keyBind.put("move_right", "39");
+//        Key.keyBind.put("move_drop",  "38");
+//        Key.keyBind.put("move_hold",  " ");
+//        Key.keyBind.put("rot_ccw",    "c");
+//        Key.keyBind.put("rot_180",    "b");
+//        Key.keyBind.put("rot_cw",     "v");
     }
 
     public void keyPressed() {
@@ -50,8 +71,12 @@ public class Tertis extends PApplet {
         if (Board.next.size() < Board.bagSize)
             Board.generateBag();
 
-        // Hold
+        /*// Hold
         if (Key.frame("q") != null && Key.frame("q") == frameCount - 1)
+            Piece.testPiece = Piece.hold(Piece.testPiece);*/
+
+        // Hold
+        if (Key.frame(Key.keyBind.get("move_hold")) != null && Key.frame(Key.keyBind.get("move_hold")) == frameCount - 1)
             Piece.testPiece = Piece.hold(Piece.testPiece);
 
         if (Piece.testPiece == null) {
@@ -64,27 +89,27 @@ public class Tertis extends PApplet {
         boolean lockPiece = false;
 
         // Directional moves
-        if (Key.repeat("w", frameCount))
+        if (Key.repeat(Key.keyBind.get("move_up"), frameCount))
             p.move(Direction.UP);
-        if (Key.repeat("a", frameCount))
+        if (Key.repeat(Key.keyBind.get("move_left"), frameCount))
             p.move(Direction.LEFT);
-        if (Key.repeat("d", frameCount))
+        if (Key.repeat(Key.keyBind.get("move_right"), frameCount))
             p.move(Direction.RIGHT);
         // Soft drop
-        if (Key.repeat("s", frameCount))
+        if (Key.repeat(Key.keyBind.get("move_down"), frameCount))
             while (p.move(Direction.DOWN));
         // Hard drop
-        if (Key.frame(" ") != null && Key.frame(" ") == frameCount - 1) {
+        if (Key.frame(Key.keyBind.get("move_drop")) != null && Key.frame(Key.keyBind.get("move_drop")) == frameCount - 1) {
             while (p.move(Direction.DOWN));
             lockPiece = true;
         }
 
         // Rotations
-        if (Key.frame("37") != null && Key.frame("37") == frameCount - 1)
+        if (Key.frame(Key.keyBind.get("rot_ccw")) != null && Key.frame(Key.keyBind.get("rot_ccw")) == frameCount - 1)
             p.rotate(Rotation.COUNTERCLOCKWISE);
-        if (Key.frame("38") != null && Key.frame("38") == frameCount - 1)
+        if (Key.frame(Key.keyBind.get("rot_180")) != null && Key.frame(Key.keyBind.get("rot_180")) == frameCount - 1)
             p.rotate(Rotation.ONEEIGHTY);
-        if (Key.frame("39") != null && Key.frame("39") == frameCount - 1)
+        if (Key.frame(Key.keyBind.get("rot_cw")) != null && Key.frame(Key.keyBind.get("rot_cw")) == frameCount - 1)
             p.rotate(Rotation.CLOCKWISE);
 
         Piece.renderGhost(p);

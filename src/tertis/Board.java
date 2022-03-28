@@ -11,8 +11,8 @@ import static java.util.Collections.swap;
 
 public class Board extends PApplet {
     // Maybe put these somewhere else?
-    public static final double fps = 180;
-    public static final double mspf = 1000 / fps;
+    public static final float fps = 180;
+    public static final float mspf = 1000 / fps;
 
     public static final int boardHeight = 40;
     public static final int boardWidth = 10;
