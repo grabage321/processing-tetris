@@ -8,10 +8,10 @@ public class Key extends PApplet {
     public static HashMap<String, Integer> keyFrame = new HashMap<>();
     public static HashMap<String, String> keyBind = new HashMap<>();
 
-    /*public static float das = 100; // Delayed auto shift
-    public static float arr = 16.66667f; // Auto repeat rate*/
-    public static float das = 8 * 16.66667f; // Delayed auto shift
-    public static float arr = 0.5f * 16.66667f; // Auto repeat rate
+    public static float das = 100; // Delayed auto shift
+    public static float arr = 16.66667f; // Auto repeat rate
+    /*public static float das = 8 * 16.66667f; // Delayed auto shift
+    public static float arr = 0.5f * 16.66667f; // Auto repeat rate*/
 
     /**
      * For returning a key's initial input, along with when the key's input should be repeated based

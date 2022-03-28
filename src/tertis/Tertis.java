@@ -72,8 +72,10 @@ public class Tertis extends PApplet {
             Board.generateBag();
 
         // Hold
-        if (Key.frame(Key.keyBind.get("move_hold")) != null && Key.frame(Key.keyBind.get("move_hold")) == frameCount - 1)
+        if (Key.frame(Key.keyBind.get("move_hold")) != null && Key.frame(Key.keyBind.get("move_hold")) == frameCount - 1 && !Piece.heldThisRound) {
             Piece.testPiece = Piece.hold(Piece.testPiece);
+            Piece.heldThisRound = true;
+        }
 
         if (Piece.testPiece == null) {
             //System.out.println("Generating new " + Board.next.peek() + " piece");
