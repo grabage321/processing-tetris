@@ -17,7 +17,8 @@ public enum DisplayColor {
     GS(89, 177, 1, true),
     GZ(215, 15, 55, true),
     GJ(33, 65, 198, true),
-    GL(227, 91, 2, true);
+    GL(227, 91, 2, true),
+    HOLD(106, 106, 106);
 
     private final int r;
     private final int g;

@@ -28,7 +28,6 @@ public class Board extends PApplet {
     public static byte[][] board = new byte[boardHeight][boardWidth];
 
     public static Queue<Character> next = new ArrayDeque<>();
-    public static Character hold = null;
 
     /**
      * Generates a randomly permuted "bag" of pieces and adds them to the next queue.
