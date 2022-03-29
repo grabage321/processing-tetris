@@ -11,15 +11,20 @@ public class Tertis extends PApplet {
 
         //temp.testPieceSetup();
 
+        String left = "37";
+        String up = "38";
+        String right = "39";
+        String down = "40";
+
         Key.keyBind.put("move_up",    "w");
         Key.keyBind.put("move_down",  "s");
         Key.keyBind.put("move_left",  "a");
         Key.keyBind.put("move_right", "d");
         Key.keyBind.put("move_drop",  " ");
         Key.keyBind.put("move_hold",  "q");
-        Key.keyBind.put("rot_ccw",    "37");
-        Key.keyBind.put("rot_180",    "38");
-        Key.keyBind.put("rot_cw",     "39");
+        Key.keyBind.put("rot_ccw",    left);
+        Key.keyBind.put("rot_180",    up);
+        Key.keyBind.put("rot_cw",     right);
 
         // Jonah controls
 //        Key.keyBind.put("move_up",    "w");
