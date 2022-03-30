@@ -11,31 +11,73 @@ public class Tertis extends PApplet {
 
         //temp.testPieceSetup();
 
+        String controlPreset = "me"; // "me", "jstris", "jonah", "alex"
+
         String left = "37";
         String up = "38";
         String right = "39";
         String down = "40";
 
-        Key.keyBind.put("move_up",    "w");
-        Key.keyBind.put("move_down",  "s");
-        Key.keyBind.put("move_left",  "a");
-        Key.keyBind.put("move_right", "d");
-        Key.keyBind.put("move_drop",  " ");
-        Key.keyBind.put("move_hold",  "q");
-        Key.keyBind.put("rot_ccw",    left);
-        Key.keyBind.put("rot_180",    up);
-        Key.keyBind.put("rot_cw",     right);
+        // Janky control preset switch
+        switch (controlPreset) {
+            case "me" -> {
+                // My preferred controls
+                Key.keyBind.put("move_up", "w");
+                Key.keyBind.put("move_down", "s");
+                Key.keyBind.put("move_left", "a");
+                Key.keyBind.put("move_right", "d");
+                Key.keyBind.put("move_drop", " ");
+                Key.keyBind.put("move_hold", "q");
+                Key.keyBind.put("rot_ccw", left);
+                Key.keyBind.put("rot_180", up);
+                Key.keyBind.put("rot_cw", right);
+                Key.setDas(100);
+                Key.setArr(16.66667f);
+            }
 
-        // Jonah controls
-//        Key.keyBind.put("move_up",    "w");
-//        Key.keyBind.put("move_down",  "40");
-//        Key.keyBind.put("move_left",  "37");
-//        Key.keyBind.put("move_right", "39");
-//        Key.keyBind.put("move_drop",  "38");
-//        Key.keyBind.put("move_hold",  " ");
-//        Key.keyBind.put("rot_ccw",    "c");
-//        Key.keyBind.put("rot_180",    "b");
-//        Key.keyBind.put("rot_cw",     "v");
+            case "jstris" -> {
+                // Jstris default
+                Key.keyBind.put("move_up", "w");
+                Key.keyBind.put("move_down", down);
+                Key.keyBind.put("move_left", left);
+                Key.keyBind.put("move_right", right);
+                Key.keyBind.put("move_drop", " ");
+                Key.keyBind.put("move_hold", "c");
+                Key.keyBind.put("rot_ccw", up);
+                Key.keyBind.put("rot_180", "a");
+                Key.keyBind.put("rot_cw", "z");
+                Key.setDas(133);
+                Key.setArr(16);
+            }
+
+            case "jonah" -> {
+                // Jonah controls
+                Key.keyBind.put("move_up", "w");
+                Key.keyBind.put("move_down", down);
+                Key.keyBind.put("move_left", left);
+                Key.keyBind.put("move_right", right);
+                Key.keyBind.put("move_drop", up);
+                Key.keyBind.put("move_hold", " ");
+                Key.keyBind.put("rot_ccw", "c");
+                Key.keyBind.put("rot_180", "b");
+                Key.keyBind.put("rot_cw", "v");
+                Key.setDas(133.33333f);
+                Key.setArr(8.33333f);
+            }
+
+            case "alex" -> {
+                Key.keyBind.put("move_down",  down);
+                Key.keyBind.put("move_left",  left);
+                Key.keyBind.put("move_right", right);
+                Key.keyBind.put("move_drop",  " ");
+                Key.keyBind.put("move_hold",  "s");
+                Key.keyBind.put("rot_cw",     up);
+                Key.setDas(133);
+                Key.setArr(10);
+            }
+        }
+
+        Board.gameState = GameState.GAMING;
     }
 
     public void keyPressed() {
@@ -72,61 +114,77 @@ public class Tertis extends PApplet {
     public void draw() {
         background(0);
 
-        // If the queue has less than 7 pieces, add a new bag's worth of pieces
-        if (Board.next.size() < Board.bagSize)
-            Board.generateBag();
+        switch (Board.gameState) {
+            case GAMING -> {
+                // If the queue has less than 7 pieces, add a new bag's worth of pieces
+                if (Board.next.size() < Board.bagSize)
+                    Board.generateBag();
 
-        // Hold
-        if (Key.frame(Key.keyBind.get("move_hold")) != null && Key.frame(Key.keyBind.get("move_hold")) == frameCount - 1 && !Piece.heldThisRound) {
-            Piece.testPiece = Piece.hold(Piece.testPiece);
-            Piece.heldThisRound = true;
+                // Hold
+                if (Key.frame(Key.keyBind.get("move_hold")) != null && Key.frame(Key.keyBind.get("move_hold")) == frameCount - 1 && !Piece.heldThisRound) {
+                    Piece.testPiece = Piece.hold(Piece.testPiece);
+                    Piece.heldThisRound = true;
+                }
+
+                if (Piece.testPiece == null) {
+                    //System.out.println("Generating new " + Board.next.peek() + " piece");
+                    Piece.testPiece = new Piece(Board.next.remove());
+                    Piece.heldThisRound = false;
+                }
+
+                boolean lockPiece = false;
+
+                // Directional moves
+                if (Key.repeat(Key.keyBind.get("move_up"), frameCount))
+                    Piece.testPiece.move(Direction.UP);
+                if (Key.repeat(Key.keyBind.get("move_left"), frameCount))
+                    Piece.testPiece.move(Direction.LEFT);
+                if (Key.repeat(Key.keyBind.get("move_right"), frameCount))
+                    Piece.testPiece.move(Direction.RIGHT);
+                // Soft drop
+                if (Key.repeat(Key.keyBind.get("move_down"), frameCount))
+                    while (Piece.testPiece.move(Direction.DOWN)) ;
+                // Hard drop
+                if (Key.frame(Key.keyBind.get("move_drop")) != null && Key.frame(Key.keyBind.get("move_drop")) == frameCount - 1) {
+                    while (Piece.testPiece.move(Direction.DOWN)) ;
+                    lockPiece = true;
+                }
+
+                // Rotations
+                if (Key.frame(Key.keyBind.get("rot_ccw")) != null && Key.frame(Key.keyBind.get("rot_ccw")) == frameCount - 1)
+                    Piece.testPiece.rotate(Rotation.COUNTERCLOCKWISE);
+                if (Key.frame(Key.keyBind.get("rot_180")) != null && Key.frame(Key.keyBind.get("rot_180")) == frameCount - 1)
+                    Piece.testPiece.rotate(Rotation.ONEEIGHTY);
+                if (Key.frame(Key.keyBind.get("rot_cw")) != null && Key.frame(Key.keyBind.get("rot_cw")) == frameCount - 1)
+                    Piece.testPiece.rotate(Rotation.CLOCKWISE);
+
+                Piece.renderGhost(Piece.testPiece);
+                Piece.testPiece.display();
+
+                if (lockPiece) {
+                    Piece.lock(Piece.testPiece);
+                    Piece.testPiece = null;
+                }
+                if (!lockPiece && Piece.testPiece.isClipping()) {
+                    Board.gameOver();
+                } else {
+                    Board.lineClear();
+                    drawBoard();
+                    keyTestDraw();
+                }
+            }
+
+            case GAMEOVER -> {
+                drawBoard();
+                keyTestDraw();
+
+                noStroke();
+                fill(128);
+                textSize(500);
+                text("GAME", -150, 350);
+                text("OVER", -120, 710);
+            }
         }
-
-        if (Piece.testPiece == null) {
-            //System.out.println("Generating new " + Board.next.peek() + " piece");
-            Piece.testPiece = new Piece(Board.next.remove());
-            Piece.heldThisRound = false;
-        }
-
-        Piece p = Piece.testPiece;
-
-        boolean lockPiece = false;
-
-        // Directional moves
-        if (Key.repeat(Key.keyBind.get("move_up"), frameCount))
-            p.move(Direction.UP);
-        if (Key.repeat(Key.keyBind.get("move_left"), frameCount))
-            p.move(Direction.LEFT);
-        if (Key.repeat(Key.keyBind.get("move_right"), frameCount))
-            p.move(Direction.RIGHT);
-        // Soft drop
-        if (Key.repeat(Key.keyBind.get("move_down"), frameCount))
-            while (p.move(Direction.DOWN));
-        // Hard drop
-        if (Key.frame(Key.keyBind.get("move_drop")) != null && Key.frame(Key.keyBind.get("move_drop")) == frameCount - 1) {
-            while (p.move(Direction.DOWN));
-            lockPiece = true;
-        }
-
-        // Rotations
-        if (Key.frame(Key.keyBind.get("rot_ccw")) != null && Key.frame(Key.keyBind.get("rot_ccw")) == frameCount - 1)
-            p.rotate(Rotation.COUNTERCLOCKWISE);
-        if (Key.frame(Key.keyBind.get("rot_180")) != null && Key.frame(Key.keyBind.get("rot_180")) == frameCount - 1)
-            p.rotate(Rotation.ONEEIGHTY);
-        if (Key.frame(Key.keyBind.get("rot_cw")) != null && Key.frame(Key.keyBind.get("rot_cw")) == frameCount - 1)
-            p.rotate(Rotation.CLOCKWISE);
-
-        Piece.renderGhost(p);
-        p.display();
-
-        if (lockPiece) {
-            Piece.lock(Piece.testPiece);
-            Piece.testPiece = null;
-        }
-
-        Board.lineClear();
-        drawBoard();
-        keyTestDraw();
     }
 
     public void keyTestDraw() {
@@ -137,13 +195,14 @@ public class Tertis extends PApplet {
 
         // Fill each key in the overlay if it is pressed
         rectMode(CORNER);
-
         noStroke();
         fill(255);
+
+        {
         if (Key.keys.get("q") != null && Key.keys.get("q"))
             rect(keyOverlayX, keyOverlayY, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get("w") != null && Key.keys.get("w"))
-            rect(keyOverlayX + keyWidth, keyOverlayY, keyWidth  - 2, keyWidth - 2);
+            rect(keyOverlayX + keyWidth, keyOverlayY, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get("a") != null && Key.keys.get("a"))
             rect(keyOverlayX, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get("s") != null && Key.keys.get("s"))
@@ -151,7 +210,7 @@ public class Tertis extends PApplet {
         if (Key.keys.get("d") != null && Key.keys.get("d"))
             rect(keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get(" ") != null && Key.keys.get(" "))
-            rect(keyOverlayX, keyOverlayY + keyWidth * 2, keyWidth * 3  - 2, keyWidth - 2);
+            rect(keyOverlayX, keyOverlayY + keyWidth * 2, keyWidth * 3 - 2, keyWidth - 2);
         if (Key.keys.get("38") != null && Key.keys.get("38"))
             rect(keyOverlayX + keyWidth, keyOverlayY + keyWidth * 4, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get("37") != null && Key.keys.get("37"))
@@ -160,12 +219,14 @@ public class Tertis extends PApplet {
             rect(keyOverlayX + keyWidth, keyOverlayY + keyWidth * 5, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get("39") != null && Key.keys.get("39"))
             rect(keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 5, keyWidth - 2, keyWidth - 2);
+        }
 
         // Key overlay squares
         strokeWeight(1);
         stroke(128);
         noFill();
 
+        {
         rect(keyOverlayX - 1,                keyOverlayY - 1,                keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX + keyWidth - 1,     keyOverlayY - 1,                keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX - 1,                keyOverlayY + keyWidth - 1,     keyWidth - 1, keyWidth - 1);
@@ -176,10 +237,13 @@ public class Tertis extends PApplet {
         rect(keyOverlayX - 1,                keyOverlayY + keyWidth * 5 - 1, keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX + keyWidth - 1,     keyOverlayY + keyWidth * 5 - 1, keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX + keyWidth * 2 - 1, keyOverlayY + keyWidth * 5 - 1, keyWidth - 1, keyWidth - 1);
+        }
 
         // Key overlay text
+        textSize(20);
         fill(128);
 
+        {
         text("Q", keyOverlayX, keyOverlayY + keyWidth - 5);
         text("W", keyOverlayX + keyWidth, keyOverlayY + keyWidth - 5);
         text("A", keyOverlayX, keyOverlayY + keyWidth * 2 - 5);
@@ -190,6 +254,7 @@ public class Tertis extends PApplet {
         text("←", keyOverlayX, keyOverlayY + keyWidth * 6 - 5);
         text("↓", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 6 - 5);
         text("→", keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 6 - 5);
+        }
     }
 
     public void drawBoard() {
@@ -314,7 +379,7 @@ public class Tertis extends PApplet {
                         if (!heldThisRound)
                             fill(nextDisplay[i][j].getR(), nextDisplay[i][j].getG(), nextDisplay[i][j].getB());
                         else
-                            fill(DisplayColor.HOLD.getR(), DisplayColor.HOLD.getG(), DisplayColor.HOLD.getB());
+                            fill(DisplayColor.GRAY.getR(), DisplayColor.GRAY.getG(), DisplayColor.GRAY.getB());
 
                         noStroke();
                         rect(x + j * Board.tileSize, y - i * Board.tileSize, Board.tileSize, Board.tileSize);

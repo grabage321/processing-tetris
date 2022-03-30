@@ -24,6 +24,8 @@ public class Board extends PApplet {
     public static final int previewCols = 4;
     public static final int previews = 5;
 
+    public static GameState gameState;
+
     public static DisplayColor[][] displayBoard = new DisplayColor[boardHeight][boardWidth];
     public static byte[][] board = new byte[boardHeight][boardWidth];
 
@@ -86,5 +88,16 @@ public class Board extends PApplet {
                 displayBoard[boardHeight - 1][i] = null;
             }
         }
+    }
+
+    public static void gameOver() {
+        for (int i = 0; i < boardHeight; i++) {
+            for (int j = 0; j < boardWidth; j++) {
+                if (displayBoard[i][j] != null)
+                    displayBoard[i][j] = DisplayColor.GRAY;
+            }
+        }
+
+        gameState = GameState.GAMEOVER;
     }
 }

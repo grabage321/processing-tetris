@@ -10,8 +10,6 @@ public class Key extends PApplet {
 
     public static float das = 100; // Delayed auto shift
     public static float arr = 16.66667f; // Auto repeat rate
-    /*public static float das = 8 * 16.66667f; // Delayed auto shift
-    public static float arr = 0.5f * 16.66667f; // Auto repeat rate*/
 
     /**
      * For returning a key's initial input, along with when the key's input should be repeated based
@@ -46,5 +44,13 @@ public class Key extends PApplet {
      */
     public static Integer frame(String keyCode) {
         return keyFrame.get(keyCode);
+    }
+
+    public static void setDas(float newDas) {
+        das = newDas;
+    }
+
+    public static void setArr(float newArr) {
+        arr = newArr;
     }
 }

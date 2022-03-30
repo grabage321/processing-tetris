@@ -141,6 +141,30 @@ public class Piece {
         this.type = type;
     }
 
+
+    /**
+     * @return This Piece's row
+     */
+    public int getRow() {
+        return this.row;
+    }
+
+    /**
+     * @return This Piece's col(umn)
+     */
+    public int getCol() {
+        return this.col;
+    }
+
+    /**
+     * @return This Piece's type
+     * <p>
+     * {@code I, i, O, o, T, t, S, s, Z, z, J, j, L, or l}
+     */
+    public char getType() {
+        return type;
+    }
+
     /**
      * Go through tiles and put each one on the display board.
      */
@@ -340,27 +364,13 @@ public class Piece {
         return canMove;
     }
 
-    /**
-     * @return This Piece's row
-     */
-    public int getRow() {
-        return this.row;
-    }
+    public boolean isClipping() {
+        boolean isClipping = false;
 
-    /**
-     * @return This Piece's col(umn)
-     */
-    public int getCol() {
-        return this.col;
-    }
+        for (Tile i : this.tiles)
+            isClipping |= Board.board[i.getRow()][i.getCol()] == 1;
 
-    /**
-     * @return This Piece's type
-     * <p>
-     * {@code I, i, O, o, T, t, S, s, Z, z, J, j, L, or l}
-     */
-    public char getType() {
-        return type;
+        return isClipping;
     }
 
     /**
@@ -398,6 +408,11 @@ public class Piece {
         ghost.display();
     }
 
+    /**
+     * For locking a piece (basically just adding it to Board.board).
+     *
+     * @param piece Piece being locked
+     */
     public static void lock(Piece piece) {
         // Add each tile's position to the board (display and actual)
         for (Tile i : piece.tiles) {
@@ -409,6 +424,12 @@ public class Piece {
         prevGhostTiles.clear();
     }
 
+    /**
+     * For performing the hold action on the current Piece
+     *
+     * @param piece the current Piece
+     * @return new Piece resulting from the swap, or {@code null} if it's the first piece being held
+     */
     public static Piece hold(Piece piece) {
         // Add the piece's tiles to the ghost piece tile array, because it's a convenient way to
         // make sure the piece being swapped out is also cleared from the display board
