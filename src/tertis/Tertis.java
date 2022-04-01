@@ -266,7 +266,8 @@ public class Tertis extends PApplet {
             for (int j = 0; j <= Board.boardWidth; j++) {
                 strokeWeight(2);
                 stroke(128);
-                point((boardX - Board.tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * Board.tileSize) - Board.tileSize / 2, (boardY - i * Board.tileSize) + Board.tileSize / 2);
+                point((boardX - Board.tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * Board.tileSize) - Board.tileSize / 2,
+                        (boardY - i * Board.tileSize) + Board.tileSize / 2);
             }
         }
 
@@ -275,7 +276,8 @@ public class Tertis extends PApplet {
             for (int j = 0; j < Board.boardWidth; j++) {
                 // Draw square if square exists
                 if (Board.displayBoard[i][j] != null) {
-                    fill(Board.displayBoard[i][j].getR(), Board.displayBoard[i][j].getG(), Board.displayBoard[i][j].getB(), Board.displayBoard[i][j].getA());
+                    fill(Board.displayBoard[i][j].getR(), Board.displayBoard[i][j].getG(),
+                         Board.displayBoard[i][j].getB(), Board.displayBoard[i][j].getA());
                     noStroke();
                     rect(boardX - Board.tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * Board.tileSize, boardY - i * Board.tileSize, Board.tileSize, Board.tileSize);
                 }
