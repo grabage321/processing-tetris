@@ -11,23 +11,23 @@ import static java.util.Collections.swap;
 
 public class Board extends PApplet {
     // Maybe put these somewhere else?
-    public static final float fps = 180;
-    public static final float mspf = 1000 / fps;
+    public static final float FPS = 180;
+    public static final float MSPF = 1000 / FPS;
 
-    public static final int boardHeight = 40;
-    public static final int boardWidth = 10;
-    public static final int displayBoardPad = 1;
-    public static final int displayBoardHeight = 20 + displayBoardPad;
-    public static final float tileSize = 30;
-    public static final int bagSize = 7;
-    public static final int previewRows = 2;
-    public static final int previewCols = 4;
-    public static final int previews = 5;
+    public static final int BOARD_HEIGHT = 40;
+    public static final int BOARD_WIDTH = 10;
+    public static final int DISPLAY_BOARD_PAD = 1;
+    public static final int DISPLAY_BOARD_HEIGHT = 20 + DISPLAY_BOARD_PAD;
+    public static final float TILE_SIZE = 30;
+    public static final int BAG_SIZE = 7;
+    public static final int PREVIEW_ROWS = 2;
+    public static final int PREVIEW_COLS = 4;
+    public static final int PREVIEWS = 5;
 
     public static GameState gameState;
 
-    public static DisplayColor[][] displayBoard = new DisplayColor[boardHeight][boardWidth];
-    public static byte[][] board = new byte[boardHeight][boardWidth];
+    public static DisplayColor[][] displayBoard = new DisplayColor[BOARD_HEIGHT][BOARD_WIDTH];
+    public static byte[][] board = new byte[BOARD_HEIGHT][BOARD_WIDTH];
 
     public static Queue<Character> next = new ArrayDeque<>();
 
@@ -54,11 +54,11 @@ public class Board extends PApplet {
      * @return line number of a full line, {@code -1} if none exist
      */
     private static int fullLine() {
-        for (int i = 0; i < boardHeight; i++) {
+        for (int i = 0; i < BOARD_HEIGHT; i++) {
             boolean lineFull = true;
 
             // & all the elements in row i
-            for (int j = 0; j < boardWidth; j++)
+            for (int j = 0; j < BOARD_WIDTH; j++)
                 lineFull &= board[i][j] == 1;
 
             // Return the line number if a full line is found
@@ -76,23 +76,27 @@ public class Board extends PApplet {
      */
     public static void lineClear() {
         while (fullLine() >= 0) {
-            // Copy all the lines above the full row down 1 (display and actual)
-            for (int i = fullLine(); i < boardHeight - 1; i++) {
+            // Copy all the lines above the full line downward by 1 (display and actual)
+            for (int i = fullLine(); i < BOARD_HEIGHT - 1; i++) {
                 arrayCopy(board[i + 1], board[i]);
                 arrayCopy(displayBoard[i + 1], displayBoard[i]);
             }
 
             // Clear out the top row (display and actual)
-            for (int i = 0; i < boardWidth; i++) {
-                board[boardHeight - 1][i] = 0;
-                displayBoard[boardHeight - 1][i] = null;
+            for (int i = 0; i < BOARD_WIDTH; i++) {
+                board[BOARD_HEIGHT - 1][i] = 0;
+                displayBoard[BOARD_HEIGHT - 1][i] = null;
             }
         }
     }
 
+    /**
+     * Game over logic. Basically sets all tiles on the display board to gray and then changes the
+     * game state to GAMEOVER.
+     */
     public static void gameOver() {
-        for (int i = 0; i < boardHeight; i++) {
-            for (int j = 0; j < boardWidth; j++) {
+        for (int i = 0; i < BOARD_HEIGHT; i++) {
+            for (int j = 0; j < BOARD_WIDTH; j++) {
                 if (displayBoard[i][j] != null)
                     displayBoard[i][j] = DisplayColor.GRAY;
             }

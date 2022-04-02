@@ -1,7 +1,8 @@
 package tertis;
 
-import java.util.ArrayList;
-import java.util.Arrays;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.*;
 
 public class Piece {
     public static Piece testPiece;
@@ -9,11 +10,38 @@ public class Piece {
     public static boolean heldThisRound = false;
     public static ArrayList<Tile> prevGhostTiles = new ArrayList<>();
 
+    public class kicks {
+        public static HashMap<String, ArrayList<ArrayList<Integer>>> JLSTZ = new HashMap<>();
+
+        static {
+            /*JLSTZ.put("0CW", new ArrayList<>(List.of(
+                    new ArrayList<>(List.of(-1, 0)),
+                    new ArrayList<>(List.of(-1, 1)),
+                    new ArrayList<>(List.of( 0,-2)),
+                    new ArrayList<>(List.of(-1,-2))
+            )));
+            JLSTZ.put("1CW", new ArrayList<>(List.of(
+                    new ArrayList<>(List.of( 1, 0)),
+                    new ArrayList<>(List.of(-1, 1)),
+                    new ArrayList<>(List.of( 0,-2)),
+                    new ArrayList<>(List.of(-1,-2))
+            )));*/
+
+            Scanner fileIn;
+            try {
+                fileIn = new Scanner(new FileReader("src/tertis/srskicks.txt"));
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     private int row;
     private int col;
+    private int rot; // Clockwise, starting upward: 0 -> 1 -> 2 -> 3 -> 0
     private final char type;
     private DisplayColor dc;
-    public Tile[] tiles = new Tile[4];
+    private Tile[] tiles = new Tile[4];
 
     /**
      * Constructs a piece at the location specified within each constructor case. The display color
@@ -137,6 +165,9 @@ public class Piece {
             }
         }
 
+        // Initialize rotation to be 0
+        this.rot = 0;
+
         // Finally, update type field
         this.type = type;
     }
@@ -179,76 +210,6 @@ public class Piece {
     public void clear() {
         for (Tile i : tiles)
             Board.displayBoard[i.getRow()][i.getCol()] = null;
-    }
-
-    /**
-     * Rotates the piece clockwise, counter-clockwise, or 180 degrees. Unless it's the O.
-     *
-     * @param rotation direction to rotate
-     */
-    public void rotate(Rotation rotation) {
-        // Allow rotation if the piece isn't an O
-        boolean canRot = Character.toUpperCase(this.type) != 'O';
-
-        // Rotation checking process
-        for (Tile i : tiles) {
-            // Enable special rotation offset for I piece
-            double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
-
-            // Initialize row and col variables (clockwise rotation)
-            int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
-            int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
-
-            // Set row and col variables to counter-clockwise or 180 degree rotations based on what
-            // was chosen
-            switch (rotation) {
-                case COUNTERCLOCKWISE -> {
-                    r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
-                    c = (int) (this.col + (this.row - i.getRow() - iOffset) - iOffset);
-                }
-                case ONEEIGHTY -> {
-                    r = (int) (this.row + (this.row - i.getRow() - iOffset) - iOffset);
-                    c = (int) (this.col + (this.col - i.getCol() - iOffset) - iOffset);
-                }
-            }
-
-            if (r >= 0 && r <= Board.boardHeight - 1 && c >= 0 && c <= Board.boardWidth - 1) {
-                // Check each tile's rotated image for a collision (if its index is within bounds)
-                canRot &= Board.board[r][c] != 1;
-            } else {
-                // If the index is not in bounds, the rotation fails
-                canRot = false;
-            }
-        }
-
-        // Piece rotation (if check was successful)
-        if (canRot) {
-            // Clear all display tiles before actually rotating
-            this.clear();
-
-            // Actually rotate
-            for (Tile i : tiles) {
-                // Same coordinate initialization as before
-                double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
-                int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
-                int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
-
-                switch (rotation) {
-                    case COUNTERCLOCKWISE -> {
-                        r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
-                        c = (int) (this.col + (this.row - i.getRow() - iOffset) - iOffset);
-                    }
-                    case ONEEIGHTY -> {
-                        r = (int) (this.row + (this.row - i.getRow() - iOffset) - iOffset);
-                        c = (int) (this.col + (this.col - i.getCol() - iOffset) - iOffset);
-                    }
-                }
-
-                // Set this tile's new coordinates
-                i.setRow(r);
-                i.setCol(c);
-            }
-        }
     }
 
     /**
@@ -297,7 +258,7 @@ public class Piece {
 
             case UP -> {
                 for (Tile i : this.tiles) {
-                    if (i.getRow() != Board.displayBoardHeight - 1)
+                    if (i.getRow() != Board.DISPLAY_BOARD_HEIGHT - 1)
                         canMove &= Board.board[i.getRow() + 1][i.getCol()] != 1;
                     else
                         canMove = false;
@@ -345,7 +306,7 @@ public class Piece {
 
             case RIGHT -> {
                 for (Tile i : this.tiles) {
-                    if (i.getCol() != Board.boardWidth - 1)
+                    if (i.getCol() != Board.BOARD_WIDTH - 1)
                         canMove &= Board.board[i.getRow()][i.getCol() + 1] != 1;
                     else
                         canMove = false;
@@ -360,10 +321,104 @@ public class Piece {
             }
         }
 
-        // Return whether the piece could move
+        // Return whether the piece can move
         return canMove;
     }
 
+    /**
+     * Rotates the piece clockwise, counter-clockwise, or 180 degrees. Unless it's the O.
+     *
+     * @param rotation direction to rotate
+     */
+    public void rotate(Rotation rotation) {
+        // Allow rotation if the piece isn't an O
+        boolean canRot = Character.toUpperCase(this.type) != 'O';
+
+        // Rotation checking process
+        for (Tile i : tiles) {
+            // Enable special rotation offset for I piece
+            double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
+
+            // Initialize row and col variables (clockwise rotation)
+            int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
+            int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
+
+            // Set row and col variables to counter-clockwise or 180 degree rotations based on what
+            // was chosen
+            switch (rotation) {
+                case COUNTERCLOCKWISE -> {
+                    r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
+                    c = (int) (this.col + (this.row - i.getRow() - iOffset) - iOffset);
+                }
+                case ONEEIGHTY -> {
+                    r = (int) (this.row + (this.row - i.getRow() - iOffset) - iOffset);
+                    c = (int) (this.col + (this.col - i.getCol() - iOffset) - iOffset);
+                }
+            }
+
+            if (r >= 0 && r <= Board.BOARD_HEIGHT - 1 && c >= 0 && c <= Board.BOARD_WIDTH - 1) {
+                // Check each tile's rotated image for a collision (if its index is within bounds)
+                canRot &= Board.board[r][c] != 1;
+            } else {
+                // If the index is not in bounds, the rotation fails
+                canRot = false;
+            }
+        }
+
+        // Piece rotation (if check was successful)
+        if (canRot) {
+            // Clear all display tiles before actually rotating
+            this.clear();
+
+            // Update the rotation counter
+            switch (rotation) {
+                case CLOCKWISE -> this.rot = (this.rot + 1) % 4;
+                case COUNTERCLOCKWISE -> this.rot = (this.rot - 1) % 4;
+                case ONEEIGHTY -> this.rot = (this.rot + 2) % 4;
+            }
+
+            // Actually rotate
+            for (Tile i : tiles) {
+                // Same coordinate initialization as before
+                double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
+                int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
+                int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
+
+                switch (rotation) {
+                    case COUNTERCLOCKWISE -> {
+                        r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
+                        c = (int) (this.col + (this.row - i.getRow() - iOffset) - iOffset);
+                    }
+                    case ONEEIGHTY -> {
+                        r = (int) (this.row + (this.row - i.getRow() - iOffset) - iOffset);
+                        c = (int) (this.col + (this.col - i.getCol() - iOffset) - iOffset);
+                    }
+                }
+
+                // Set this tile's new coordinates
+                i.setRow(r);
+                i.setCol(c);
+            }
+        }
+    }
+
+    /**
+     * Handles wall kicks. Returns the first successful kick number.
+     *
+     * @param rot current rotation count
+     * @param rotation rotation being performed
+     * @return first successful kick
+     */
+    public int rotationKick(char type, int rot, Rotation rotation) {
+        return 0;
+    }
+
+    /**
+     * Detects if any of this Piece's tiles are overlapped with tiles on the actual board. This
+     * should only be possible when topping out, so this function is used to trigger a game over.
+     *
+     * @return {@code true} if this Piece is clipping
+     */
     public boolean isClipping() {
         boolean isClipping = false;
 

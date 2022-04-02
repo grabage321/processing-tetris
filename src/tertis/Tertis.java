@@ -7,7 +7,7 @@ import java.util.Queue;
 
 public class Tertis extends PApplet {
     public void setup() {
-        frameRate((float) Board.fps);
+        frameRate((float) Board.FPS);
 
         //temp.testPieceSetup();
 
@@ -117,7 +117,7 @@ public class Tertis extends PApplet {
         switch (Board.gameState) {
             case GAMING -> {
                 // If the queue has less than 7 pieces, add a new bag's worth of pieces
-                if (Board.next.size() < Board.bagSize)
+                if (Board.next.size() < Board.BAG_SIZE)
                     Board.generateBag();
 
                 // Hold
@@ -262,24 +262,24 @@ public class Tertis extends PApplet {
         float boardY = 670;
 
         // Draw grid dots? I think?
-        for (int i = 0; i <= Board.displayBoardHeight; i++) {
-            for (int j = 0; j <= Board.boardWidth; j++) {
+        for (int i = 0; i <= Board.DISPLAY_BOARD_HEIGHT; i++) {
+            for (int j = 0; j <= Board.BOARD_WIDTH; j++) {
                 strokeWeight(2);
                 stroke(128);
-                point((boardX - Board.tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * Board.tileSize) - Board.tileSize / 2,
-                        (boardY - i * Board.tileSize) + Board.tileSize / 2);
+                point((boardX - Board.TILE_SIZE * ((Board.BOARD_WIDTH / 2.0f) - 0.5f) + j * Board.TILE_SIZE) - Board.TILE_SIZE / 2,
+                        (boardY - i * Board.TILE_SIZE) + Board.TILE_SIZE / 2);
             }
         }
 
         rectMode(CENTER);
-        for (int i = 0; i < Board.displayBoardHeight; i++) {
-            for (int j = 0; j < Board.boardWidth; j++) {
+        for (int i = 0; i < Board.DISPLAY_BOARD_HEIGHT; i++) {
+            for (int j = 0; j < Board.BOARD_WIDTH; j++) {
                 // Draw square if square exists
                 if (Board.displayBoard[i][j] != null) {
                     fill(Board.displayBoard[i][j].getR(), Board.displayBoard[i][j].getG(),
                          Board.displayBoard[i][j].getB(), Board.displayBoard[i][j].getA());
                     noStroke();
-                    rect(boardX - Board.tileSize * ((Board.boardWidth / 2.0f) - 0.5f) + j * Board.tileSize, boardY - i * Board.tileSize, Board.tileSize, Board.tileSize);
+                    rect(boardX - Board.TILE_SIZE * ((Board.BOARD_WIDTH / 2.0f) - 0.5f) + j * Board.TILE_SIZE, boardY - i * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
                 }
 
                 // Draw points at center of all cells
@@ -292,19 +292,19 @@ public class Tertis extends PApplet {
         // Black out the space above the grid and draw the border around the play area
         rectMode(CORNERS);
         fill(0);
-        rect(0, 0, width, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * Board.tileSize);
+        rect(0, 0, width, boardY - (Board.DISPLAY_BOARD_HEIGHT - Board.DISPLAY_BOARD_PAD) * Board.TILE_SIZE);
         strokeWeight(3);
         stroke(128);
         fill(0, 0, 0, 0);
-        rect(boardX + Board.tileSize * Board.boardWidth / 2 + 1, boardY + Board.tileSize / 2 + 1,
-             boardX - Board.tileSize * Board.boardWidth / 2 - 2, boardY - (Board.displayBoardHeight - Board.displayBoardPad) * Board.tileSize);
+        rect(boardX + Board.TILE_SIZE * Board.BOARD_WIDTH / 2 + 1, boardY + Board.TILE_SIZE / 2 + 1,
+             boardX - Board.TILE_SIZE * Board.BOARD_WIDTH / 2 - 2, boardY - (Board.DISPLAY_BOARD_HEIGHT - Board.DISPLAY_BOARD_PAD) * Board.TILE_SIZE);
 
         // Draw preview pieces + hold piece
         stroke(0, 255, 0);
         strokeWeight(5);
         Queue<Character> nextCopy = new ArrayDeque<>(Board.next);
-        for (int i = 0; i < Board.previews; i++)
-            drawPreview(700, 160 + i * 3 * Board.tileSize, nextCopy.remove());
+        for (int i = 0; i < Board.PREVIEWS; i++)
+            drawPreview(700, 160 + i * 3 * Board.TILE_SIZE, nextCopy.remove());
         if (Piece.hold != null)
             drawPreview(200, 160, Piece.hold, Piece.heldThisRound);
     }
@@ -315,7 +315,7 @@ public class Tertis extends PApplet {
 
     public void drawPreview(float x, float y, char type, boolean heldThisRound) {
         // Initialize grid used for storing next queue piece tiles
-        DisplayColor[][] nextDisplay = new DisplayColor[Board.previewRows][Board.previewCols];
+        DisplayColor[][] nextDisplay = new DisplayColor[Board.PREVIEW_ROWS][Board.PREVIEW_COLS];
 
         switch (type) {
             /*
@@ -374,8 +374,8 @@ public class Tertis extends PApplet {
 
         try {
             rectMode(CENTER);
-            for (int i = 0; i < Board.previewRows; i++) {
-                for (int j = 0; j < Board.previewCols; j++) {
+            for (int i = 0; i < Board.PREVIEW_ROWS; i++) {
+                for (int j = 0; j < Board.PREVIEW_COLS; j++) {
                     // Draw each square if it should be drawn, and then clear it out after drawing
                     if (nextDisplay[i][j] != null) {
                         if (!heldThisRound)
@@ -384,7 +384,7 @@ public class Tertis extends PApplet {
                             fill(DisplayColor.GRAY.getR(), DisplayColor.GRAY.getG(), DisplayColor.GRAY.getB());
 
                         noStroke();
-                        rect(x + j * Board.tileSize, y - i * Board.tileSize, Board.tileSize, Board.tileSize);
+                        rect(x + j * Board.TILE_SIZE, y - i * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);
                         nextDisplay[i][j] = null;
                     }
                 }

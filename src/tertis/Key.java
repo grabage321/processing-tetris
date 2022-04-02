@@ -29,8 +29,8 @@ public class Key extends PApplet {
              * Number of frames since DAS ended is divisible by ARR number
              */
             return frame(keyCode) == frameCount - 1
-                    || ((frameCount - frame(keyCode) - das / Board.mspf >= 0)
-                    && (int) ((frameCount - frame(keyCode) - das / Board.mspf) % (arr / Board.mspf)) == 0);
+                    || ((frameCount - frame(keyCode) - das / Board.MSPF >= 0)
+                    && (int) ((frameCount - frame(keyCode) - das / Board.MSPF) % (arr / Board.MSPF)) == 0);
         } else {
             return false;
         }
