@@ -3,6 +3,10 @@ package tertis;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.lang.Integer.parseInt;
 
 public class Piece {
     public static Piece testPiece;
@@ -10,29 +14,93 @@ public class Piece {
     public static boolean heldThisRound = false;
     public static ArrayList<Tile> prevGhostTiles = new ArrayList<>();
 
-    public class kicks {
-        public static HashMap<String, ArrayList<ArrayList<Integer>>> JLSTZ = new HashMap<>();
+    /**
+     * Class just for holding kick tables. Mostly a file reader for srskicks.txt.
+     */
+    public static class Kicks {
+        public static HashMap<String, ArrayList<ArrayList<Integer>>> jlstzKicks = new HashMap<>();
+        public static HashMap<String, ArrayList<ArrayList<Integer>>> iKicks = new HashMap<>();
+        public static int testCount;
+        private static int iHateMyselfForDoingThis = 0;
 
         static {
-            /*JLSTZ.put("0CW", new ArrayList<>(List.of(
-                    new ArrayList<>(List.of(-1, 0)),
-                    new ArrayList<>(List.of(-1, 1)),
-                    new ArrayList<>(List.of( 0,-2)),
-                    new ArrayList<>(List.of(-1,-2))
-            )));
-            JLSTZ.put("1CW", new ArrayList<>(List.of(
-                    new ArrayList<>(List.of( 1, 0)),
-                    new ArrayList<>(List.of(-1, 1)),
-                    new ArrayList<>(List.of( 0,-2)),
-                    new ArrayList<>(List.of(-1,-2))
-            )));*/
-
-            Scanner fileIn;
+            // Initialize the FileReader for srskicks.txt
+            Scanner fileIn = null;
             try {
                 fileIn = new Scanner(new FileReader("src/tertis/srskicks.txt"));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
+
+            // Initialize the line parsing regex and testCount
+            Pattern p = kickTableRegex(4);
+
+            // File reading
+            while (fileIn != null && fileIn.hasNextLine()) {
+                // Trim whitespace from the beginning and end of each line read
+                String line = fileIn.nextLine().trim();
+
+                // If the line is not blank and doesn't begin with a comment character, parse it
+                if (!line.isEmpty() && line.charAt(0) != '#') {
+
+                    if (line.toUpperCase().startsWith("TEST_COUNT=")) {
+                        // If the line begins with "TEST_COUNT=" then parse the following number and
+                        // pass it into kickTableRegex()
+                        int newTestCount = parseInt(line.substring(11).trim());
+                        // Update the line parsing regex and testCount
+                        p = kickTableRegex(newTestCount);
+                    } else if (line.equalsIgnoreCase("JLSTZ")) {
+                        // If the line is "JLSTZ" iHateMyselfForDoingThis to 1
+                        iHateMyselfForDoingThis = 1;
+                    } else if (line.equalsIgnoreCase("I")) {
+                        // If the line is "I" iHateMyselfForDoingThis to 1
+                        iHateMyselfForDoingThis = 2;
+                    } else {
+                        // Set up the matcher
+                        Matcher m = p.matcher(line);
+
+                        // Match the regex, and make sure the group count is 2 + the number of
+                        // coordinate pairs expected
+                        if (m.find() && m.groupCount() == 2 + testCount * 2) {
+                            // The key for the HashMap should be the current rotation state (number
+                            // 0–3), followed by the rotation's abbreviation ("CW", "CCW", or "180")
+                            String key = m.group(1) + m.group(2).toUpperCase();
+
+                            // Create an ArrayList of Integer pairs that represent the offsets for
+                            // each kick test
+                            ArrayList<ArrayList<Integer>> tests = new ArrayList<>();
+                            for (int i = 3; i < 2 + testCount * 2; i += 2) {
+                                tests.add(new ArrayList<>(List.of(
+                                        parseInt(m.group(i)),
+                                        parseInt(m.group(i + 1))
+                                )));
+                            }
+
+                            // Finally, put the current entry into either the jlstz or i kick table
+                            // (depends on which iHateMyselfForDoingThis was set to last)
+                            if (iHateMyselfForDoingThis == 1)
+                                jlstzKicks.put(key, tests);
+                            else if (iHateMyselfForDoingThis == 2)
+                                iKicks.put(key, tests);
+                        } else {
+                            throw new RuntimeException("Improperly formatted kick table");
+                        }
+                    }
+                }
+            }
+        }
+
+        /**
+         * Updates the regex used for parsing lines to match testCount, and updates testCount.
+         *
+         * @return Pattern for the line parsing regex
+         */
+        private static Pattern kickTableRegex(int newTestCount) {
+            testCount = newTestCount;
+
+            String kickTableRegex = "([0-3])\\s*(CW|CCW|180)" +
+                    "\\s*\\(\\s*\\+?(-?[0-9]+),\\s*(-?[0-9]*)\\)".repeat(newTestCount);
+            return Pattern.compile(kickTableRegex, Pattern.CASE_INSENSITIVE);
         }
     }
 
@@ -42,6 +110,10 @@ public class Piece {
     private final char type;
     private DisplayColor dc;
     private Tile[] tiles = new Tile[4];
+
+    static {
+        int temp = Kicks.testCount;
+    }
 
     /**
      * Constructs a piece at the location specified within each constructor case. The display color
@@ -200,8 +272,9 @@ public class Piece {
      * Go through tiles and put each one on the display board.
      */
     public void display() {
-        for (Tile i : tiles)
-            Board.displayBoard[i.getRow()][i.getCol()] = this.dc;
+            for (Tile i : tiles)
+                Board.displayBoard[i.getRow()][i.getCol()] = this.dc;
+        //Board.displayBoard[this.row][this.col] = DisplayColor.DEBUG;
     }
 
     /**
@@ -274,7 +347,7 @@ public class Piece {
 
             case DOWN -> {
                 for (Tile i : this.tiles) {
-                    if (i.getRow() != 0)
+                    if (i.getRow() > 0 && i.getCol() < Board.BOARD_WIDTH)
                         canMove &= Board.board[i.getRow() - 1][i.getCol()] != 1;
                     else
                         canMove = false;
@@ -336,27 +409,11 @@ public class Piece {
 
         // Rotation checking process
         for (Tile i : tiles) {
-            // Enable special rotation offset for I piece
-            double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
+            // Initialize rotated coordinates
+            int r = getRotatedRows(i, rotation);
+            int c = getRotatedCols(i, rotation);
 
-            // Initialize row and col variables (clockwise rotation)
-            int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
-            int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
-
-            // Set row and col variables to counter-clockwise or 180 degree rotations based on what
-            // was chosen
-            switch (rotation) {
-                case COUNTERCLOCKWISE -> {
-                    r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
-                    c = (int) (this.col + (this.row - i.getRow() - iOffset) - iOffset);
-                }
-                case ONEEIGHTY -> {
-                    r = (int) (this.row + (this.row - i.getRow() - iOffset) - iOffset);
-                    c = (int) (this.col + (this.col - i.getCol() - iOffset) - iOffset);
-                }
-            }
-
-            if (r >= 0 && r <= Board.BOARD_HEIGHT - 1 && c >= 0 && c <= Board.BOARD_WIDTH - 1) {
+            if (r >= 0 && r < Board.BOARD_HEIGHT && c >= 0 && c < Board.BOARD_WIDTH) {
                 // Check each tile's rotated image for a collision (if its index is within bounds)
                 canRot &= Board.board[r][c] != 1;
             } else {
@@ -365,33 +422,72 @@ public class Piece {
             }
         }
 
+        // Variable used to store the kick result
+        int kick = -1;
+        if (!canRot)
+            kick = this.rotationKick(rotation);
         // Piece rotation (if check was successful)
-        if (canRot) {
+        if (canRot || kick != -1) {
             // Clear all display tiles before actually rotating
             this.clear();
+
+            // Initalize key based kick number
+            String key = String.valueOf(this.rot) + rotation;
 
             // Update the rotation counter
             switch (rotation) {
                 case CLOCKWISE -> this.rot = (this.rot + 1) % 4;
-                case COUNTERCLOCKWISE -> this.rot = (this.rot - 1) % 4;
+                case COUNTERCLOCKWISE -> this.rot = (this.rot + 3) % 4;
                 case ONEEIGHTY -> this.rot = (this.rot + 2) % 4;
+            }
+
+            // Update piece's center coordinates if a kick was performed
+            if (kick != -1 && this.type == 'I') {
+                this.row += Kicks.iKicks.get(key).get(kick).get(1);
+                this.col += Kicks.iKicks.get(key).get(kick).get(0);
+            } else if (kick != -1) {
+                this.row += Kicks.jlstzKicks.get(key).get(kick).get(1);
+                this.col += Kicks.jlstzKicks.get(key).get(kick).get(0);
             }
 
             // Actually rotate
             for (Tile i : tiles) {
-                // Same coordinate initialization as before
-                double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
-                int r = (int) (this.row + (this.col - i.getCol() - iOffset) - iOffset);
-                int c = (int) (this.col - (this.row - i.getRow() - iOffset) - iOffset);
+                // Initialize rotated coordinates
+                int r = getRotatedRows(i, rotation);
+                int c = getRotatedCols(i, rotation);
 
-                switch (rotation) {
-                    case COUNTERCLOCKWISE -> {
-                        r = (int) (this.row - (this.col - i.getCol() - iOffset) - iOffset);
-                        c = (int) (this.col + (this.row - i.getRow() - iOffset) - iOffset);
-                    }
-                    case ONEEIGHTY -> {
-                        r = (int) (this.row + (this.row - i.getRow() - iOffset) - iOffset);
-                        c = (int) (this.col + (this.col - i.getCol() - iOffset) - iOffset);
+                // Offset by kick amount if a kick was successful
+                if (kick != -1) {
+                    switch (rotation) {
+                        case CLOCKWISE -> {
+                            if (this.type == 'I') {
+                                r -= Kicks.iKicks.get(key).get(kick).get(0);
+                                c += Kicks.iKicks.get(key).get(kick).get(1);
+                            } else {
+                                r -= Kicks.jlstzKicks.get(key).get(kick).get(0);
+                                c += Kicks.jlstzKicks.get(key).get(kick).get(1);
+                            }
+                        }
+
+                        case COUNTERCLOCKWISE -> {
+                            if (this.type == 'I') {
+                                r += Kicks.iKicks.get(key).get(kick).get(0);
+                                c -= Kicks.iKicks.get(key).get(kick).get(1);
+                            } else {
+                                r += Kicks.jlstzKicks.get(key).get(kick).get(0);
+                                c -= Kicks.jlstzKicks.get(key).get(kick).get(1);
+                            }
+                        }
+
+                        case ONEEIGHTY -> {
+                            if (this.type == 'I') {
+                                r -= Kicks.iKicks.get(key).get(kick).get(1);
+                                c -= Kicks.iKicks.get(key).get(kick).get(0);
+                            } else {
+                                r -= Kicks.jlstzKicks.get(key).get(kick).get(1);
+                                c -= Kicks.jlstzKicks.get(key).get(kick).get(0);
+                            }
+                        }
                     }
                 }
 
@@ -402,15 +498,82 @@ public class Piece {
         }
     }
 
+    private int getRotatedRows(Tile tile, Rotation rotation) {
+        // Enable special rotation offset for I piece
+        double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
+
+        // Perform rotation math on the row variables based on the rotation chosen
+        int r = (int) (this.row + (this.col - tile.getCol() - iOffset) - iOffset);
+        switch (rotation) {
+            case COUNTERCLOCKWISE ->
+                    r = (int) (this.row - (this.col - tile.getCol() - iOffset) - iOffset);
+            case ONEEIGHTY ->
+                    r = (int) (this.row + (this.row - tile.getRow() - iOffset) - iOffset);
+        }
+
+        return r;
+    }
+
+    private int getRotatedCols(Tile tile, Rotation rotation) {
+        // Enable special rotation offset for I piece
+        double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
+
+        // Perform rotation math on the row variables based on the rotation chosen
+        int c = (int) (this.col - (this.row - tile.getRow() - iOffset) - iOffset);
+        switch (rotation) {
+            case COUNTERCLOCKWISE ->
+                    c = (int) (this.col + (this.row - tile.getRow() - iOffset) - iOffset);
+            case ONEEIGHTY ->
+                    c = (int) (this.col + (this.col - tile.getCol() - iOffset) - iOffset);
+        }
+
+        return c;
+    }
+
     /**
      * Handles wall kicks. Returns the first successful kick number.
      *
-     * @param rot current rotation count
      * @param rotation rotation being performed
      * @return first successful kick
      */
-    public int rotationKick(char type, int rot, Rotation rotation) {
-        return 0;
+    private int rotationKick(Rotation rotation) {
+
+        int i;
+        for (i = 0; i < Kicks.testCount; i++) {
+            boolean canRot = true;
+            String key = String.valueOf(this.rot) + rotation;
+
+            for (Tile j : this.tiles) {
+                // Initialize rotated coordinates
+                int r = getRotatedRows(j, rotation);
+                int c = getRotatedCols(j, rotation);
+
+                if (this.type == 'I') {
+                    r += Kicks.iKicks.get(key).get(i).get(1);
+                    c += Kicks.iKicks.get(key).get(i).get(0);
+                } else {
+                    r += Kicks.jlstzKicks.get(key).get(i).get(1);
+                    c += Kicks.jlstzKicks.get(key).get(i).get(0);
+                }
+
+                if (r >= 0 && r < Board.BOARD_HEIGHT && c >= 0 && c < Board.BOARD_WIDTH)
+                    // Check each tile's rotated image for a collision (if its index is within bounds)
+                    canRot &= Board.board[r][c] != 1;
+                else
+                    // If the index is not in bounds, the rotation fails
+                    canRot = false;
+            }
+
+            if (canRot) {
+                System.out.println("Kick success: " + key + " " + i);
+                break;
+            }
+        }
+
+        if (i < Kicks.testCount)
+            return i;
+        else
+            return -1;
     }
 
     /**

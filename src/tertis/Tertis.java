@@ -166,7 +166,10 @@ public class Tertis extends PApplet {
                     Piece.testPiece = null;
                 }
                 if (!lockPiece && Piece.testPiece.isClipping()) {
-                    Board.gameOver();
+                    //Board.gameOver();
+                    Board.lineClear();
+                    drawBoard();
+                    keyTestDraw();
                 } else {
                     Board.lineClear();
                     drawBoard();

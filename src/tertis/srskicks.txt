@@ -1,21 +1,46 @@
-# J, L, S, T, Z Wall Kick Data
-#       Test 1      Test 2      Test 3      Test 4      Test 5
-0CW    ( 0, 0)     (-1, 0)     (-1, 1)     ( 0,-2)     (-1,-2)
-1CW    ( 0, 0)     ( 1, 0)     ( 1,-1)     ( 0, 2)     ( 1, 2)
-2CW    ( 0, 0)     ( 1, 0)     ( 1, 1)     ( 0,-2)     ( 1,-2)
-3CW    ( 0, 0)     (-1, 0)     (-1,-1)     ( 0, 2)     (-1, 2)
-0CCW   ( 0, 0)     ( 1, 0)     ( 1, 1)     ( 0,-2)     ( 1,-2)
-1CCW   ( 0, 0)     ( 1, 0)     ( 1,-1)     ( 0, 2)     ( 1, 2)
-2CCW   ( 0, 0)     (-1, 0)     (-1, 1)     ( 0,-2)     (-1,-2)
-3CCW   ( 0, 0)     (-1, 0)     (-1,-1)     ( 0, 2)     (-1, 2)
+#### Wall kick tables, copied from the Tetris Wiki ####
+#### Except the 180s, because those aren't a thing ####
 
+# Test 1 has been removed because these tables are only
+# used by the rotationKick() function,  which only runs
+# after the natural rotation, equivalent to (0, 0), has
+# been tested.   Also,  whitespace should be ignored in
+# this file, so make it pretty or don't make it pretty.
+# The choice is yours.
+
+
+
+# You can uncomment and change this, hopefully
+#TEST_COUNT=4
+
+JLSTZ
+# J, L, S, T, Z Wall Kick Data
+#       Test 2      Test 3      Test 4      Test 5
+0CW     (-1, 0)     (-1, 1)     ( 0,-2)     (-1,-2)
+1CW     ( 1, 0)     ( 1,-1)     ( 0, 2)     ( 1, 2)
+2CW     ( 1, 0)     ( 1, 1)     ( 0,-2)     ( 1,-2)
+3CW     (-1, 0)     (-1,-1)     ( 0, 2)     (-1, 2)
+0CCW    ( 1, 0)     ( 1, 1)     ( 0,-2)     ( 1,-2)
+1CCW    ( 1, 0)     ( 1,-1)     ( 0, 2)     ( 1, 2)
+2CCW    (-1, 0)     (-1, 1)     ( 0,-2)     (-1,-2)
+3CCW    (-1, 0)     (-1,-1)     ( 0, 2)     (-1, 2)
+0180    ( 0, 1)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+1180    ( 1, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+2180    ( 0,-1)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+3180    (-1, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+
+I
 # I Wall Kick Data
-#       Test 1      Test 2      Test 3      Test 4      Test 5
-0CW    ( 0, 0)     (-2, 0)     ( 1, 0)     (-2,-1)     ( 1, 2)
-1CW    ( 0, 0)     (-1, 0)     ( 2, 0)     (-1, 2)     ( 2,-1)
-2CW    ( 0, 0)     ( 2, 0)     (-1, 0)     ( 2, 1)     (-1,-2)
-3CW    ( 0, 0)     ( 1, 0)     (-2, 0)     ( 1,-2)     (-2, 1)
-0CCW   ( 0, 0)     (-1, 0)     ( 2, 0)     (-1, 2)     ( 2,-1)
-1CCW   ( 0, 0)     ( 2, 0)     (-1, 0)     ( 2, 1)     (-1,-2)
-2CCW   ( 0, 0)     ( 1, 0)     (-2, 0)     ( 1,-2)     (-2, 1)
-3CCW   ( 0, 0)     (-2, 0)     ( 1, 0)     (-2,-1)     ( 1, 2)
+#       Test 2      Test 3      Test 4      Test 5
+0CW     (-2, 0)     ( 1, 0)     (-2,-1)     ( 1, 2)
+1CW     (-1, 0)     ( 2, 0)     (-1, 2)     ( 2,-1)
+2CW     ( 2, 0)     (-1, 0)     ( 2, 1)     (-1,-2)
+3CW     ( 1, 0)     (-2, 0)     ( 1,-2)     (-2, 1)
+0CCW    (-1, 0)     ( 2, 0)     (-1, 2)     ( 2,-1)
+1CCW    ( 2, 0)     (-1, 0)     ( 2, 1)     (-1,-2)
+2CCW    ( 1, 0)     (-2, 0)     ( 1,-2)     (-2, 1)
+3CCW    (-2, 0)     ( 1, 0)     (-2,-1)     ( 1, 2)
+0180    ( 0, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+1180    ( 0, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+2180    ( 0, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+3180    ( 0, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)

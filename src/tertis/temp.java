@@ -4,7 +4,12 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * Good ol' temp class.
@@ -48,32 +53,6 @@ public class temp {
         //displayBoard[20][5] = displayColor.S;
 
         //Piece.testPiece = new Piece('I');
-    }
-
-    public class kicks {
-        public static HashMap<String, ArrayList<ArrayList<Integer>>> JLSTZ = new HashMap<>();
-
-        static {
-            /*JLSTZ.put("0CW", new ArrayList<>(List.of(
-                    new ArrayList<>(List.of(-1, 0)),
-                    new ArrayList<>(List.of(-1, 1)),
-                    new ArrayList<>(List.of( 0,-2)),
-                    new ArrayList<>(List.of(-1,-2))
-            )));
-            JLSTZ.put("1CW", new ArrayList<>(List.of(
-                    new ArrayList<>(List.of( 1, 0)),
-                    new ArrayList<>(List.of(-1, 1)),
-                    new ArrayList<>(List.of( 0,-2)),
-                    new ArrayList<>(List.of(-1,-2))
-            )));*/
-
-            Scanner fileIn;
-            try {
-                fileIn = new Scanner(new FileReader("src/tertis/srskicks.txt"));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-        }
     }
 
     public static void main(String[] args) {
