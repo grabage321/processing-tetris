@@ -11,6 +11,22 @@ public class Tertis extends PApplet {
 
         //temp.testPieceSetup();
 
+        // 4-wide mode
+        /*for (int i = 0; i < Board.BOARD_HEIGHT; i++) {
+            for (int j = 0; j <Board.BOARD_WIDTH; j++) {
+                if (j < 3 || j > 6) {
+                    Board.board[i][j] = 1;
+                    Board.displayBoard[i][j] = DisplayColor.LIGHTGRAY;
+                }
+            }
+        }
+        Board.board[0][3] = 1;
+        Board.displayBoard[0][3] = DisplayColor.LIGHTGRAY;
+        Board.board[0][4] = 1;
+        Board.displayBoard[0][4] = DisplayColor.LIGHTGRAY;
+        Board.board[0][5] = 1;
+        Board.displayBoard[0][5] = DisplayColor.LIGHTGRAY;*/
+
         String controlPreset = "me"; // "me", "jstris", "jonah", "alex"
 
         String left = "37";
@@ -161,15 +177,17 @@ public class Tertis extends PApplet {
                 Piece.renderGhost(Piece.testPiece);
                 Piece.testPiece.display();
 
+                boolean lockOut = false;
                 if (lockPiece) {
                     Piece.lock(Piece.testPiece);
+                    lockOut = Piece.testPiece.getLowestTile().getRow() >= Board.DISPLAY_BOARD_HEIGHT - Board.DISPLAY_BOARD_PAD;
                     Piece.testPiece = null;
                 }
+
                 if (!lockPiece && Piece.testPiece.isClipping()) {
-                    //Board.gameOver();
-                    Board.lineClear();
-                    drawBoard();
-                    keyTestDraw();
+                    Board.gameOver();
+                } else if (lockPiece && lockOut) {
+                    Board.gameOver();
                 } else {
                     Board.lineClear();
                     drawBoard();
@@ -292,15 +310,20 @@ public class Tertis extends PApplet {
             }
         }
 
-        // Black out the space above the grid and draw the border around the play area
+        // Long variable
+        float borderTop = boardY - (Board.DISPLAY_BOARD_HEIGHT - Board.DISPLAY_BOARD_PAD) * Board.TILE_SIZE + Board.TILE_SIZE / 3;
+
+        // Black out the space above the grid
         rectMode(CORNERS);
         fill(0);
-        rect(0, 0, width, boardY - (Board.DISPLAY_BOARD_HEIGHT - Board.DISPLAY_BOARD_PAD) * Board.TILE_SIZE);
+        rect(0, 0, width, borderTop);
+
+        // Border around the play area
         strokeWeight(3);
         stroke(128);
         fill(0, 0, 0, 0);
         rect(boardX + Board.TILE_SIZE * Board.BOARD_WIDTH / 2 + 1, boardY + Board.TILE_SIZE / 2 + 1,
-             boardX - Board.TILE_SIZE * Board.BOARD_WIDTH / 2 - 2, boardY - (Board.DISPLAY_BOARD_HEIGHT - Board.DISPLAY_BOARD_PAD) * Board.TILE_SIZE);
+             boardX - Board.TILE_SIZE * Board.BOARD_WIDTH / 2 - 2, borderTop);
 
         // Draw preview pieces + hold piece
         stroke(0, 255, 0);
@@ -384,7 +407,7 @@ public class Tertis extends PApplet {
                         if (!heldThisRound)
                             fill(nextDisplay[i][j].getR(), nextDisplay[i][j].getG(), nextDisplay[i][j].getB());
                         else
-                            fill(DisplayColor.GRAY.getR(), DisplayColor.GRAY.getG(), DisplayColor.GRAY.getB());
+                            fill(DisplayColor.DARKGRAY.getR(), DisplayColor.DARKGRAY.getG(), DisplayColor.DARKGRAY.getB());
 
                         noStroke();
                         rect(x + j * Board.TILE_SIZE, y - i * Board.TILE_SIZE, Board.TILE_SIZE, Board.TILE_SIZE);

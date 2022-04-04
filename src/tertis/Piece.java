@@ -584,11 +584,20 @@ public class Piece {
      */
     public boolean isClipping() {
         boolean isClipping = false;
-
         for (Tile i : this.tiles)
             isClipping |= Board.board[i.getRow()][i.getCol()] == 1;
 
         return isClipping;
+    }
+
+    public Tile getLowestTile() {
+        Tile lowestTile = this.tiles[0];
+        for (Tile i : this.tiles) {
+            if (i.getRow() < lowestTile.getRow())
+                lowestTile = i;
+        }
+
+        return lowestTile;
     }
 
     /**
