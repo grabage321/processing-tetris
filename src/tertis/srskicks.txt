@@ -4,13 +4,16 @@
 # Test 1 has been removed because these tables are only
 # used by the rotationKick() function,  which only runs
 # after the natural rotation, equivalent to (0, 0), has
-# been tested.   Also,  whitespace should be ignored in
+# been tested.  The 180  table entries  are filled with
+# (0, 0)s because 180s really only have one extra test,
+# but the number  of tests given MUST  match TEST_COUNT
+# (4 by default). Also, whitespace should be ignored in
 # this file, so make it pretty or don't make it pretty.
 # The choice is yours.
 
 
 
-# You can uncomment and change this, hopefully
+# You can uncomment and change this
 #TEST_COUNT=4
 
 JLSTZ

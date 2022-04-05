@@ -324,12 +324,8 @@ public class Piece {
         boolean canMove = true;
 
         switch (direction) {
-            /*
-             * Each case can be broken down into two parts: check if the piece can be moved in the
-             * given direction, and move the piece in the given direction (if movePiece is true).
-             */
-
             case UP -> {
+                // Check that every Tile's moved image is clear
                 for (Tile i : this.tiles) {
                     if (i.getRow() != Board.DISPLAY_BOARD_HEIGHT - 1)
                         canMove &= Board.board[i.getRow() + 1][i.getCol()] != 1;
@@ -337,6 +333,7 @@ public class Piece {
                         canMove = false;
                 }
 
+                // Move the piece if the test passed (and if movePiece is true)
                 if (canMove && movePiece) {
                     this.clear();
                     for (Tile i : this.tiles)
@@ -346,6 +343,7 @@ public class Piece {
             }
 
             case DOWN -> {
+                // Check that every Tile's moved image is clear
                 for (Tile i : this.tiles) {
                     if (i.getRow() > 0 && i.getCol() < Board.BOARD_WIDTH)
                         canMove &= Board.board[i.getRow() - 1][i.getCol()] != 1;
@@ -353,6 +351,7 @@ public class Piece {
                         canMove = false;
                 }
 
+                // Move the piece if the test passed (and if movePiece is true)
                 if (canMove && movePiece) {
                     this.clear();
                     for (Tile i : this.tiles)
@@ -362,6 +361,7 @@ public class Piece {
             }
 
             case LEFT -> {
+                // Check that every Tile's moved image is clear
                 for (Tile i : this.tiles) {
                     if (i.getCol() != 0)
                         canMove &= Board.board[i.getRow()][i.getCol() - 1] != 1;
@@ -369,6 +369,7 @@ public class Piece {
                         canMove = false;
                 }
 
+                // Move the piece if the test passed (and if movePiece is true)
                 if (canMove && movePiece) {
                     this.clear();
                     for (Tile i : this.tiles)
@@ -378,6 +379,7 @@ public class Piece {
             }
 
             case RIGHT -> {
+                // Check that every Tile's moved image is clear
                 for (Tile i : this.tiles) {
                     if (i.getCol() != Board.BOARD_WIDTH - 1)
                         canMove &= Board.board[i.getRow()][i.getCol() + 1] != 1;
@@ -385,6 +387,7 @@ public class Piece {
                         canMove = false;
                 }
 
+                // Move the piece if the test passed (and if movePiece is true)
                 if (canMove && movePiece) {
                     this.clear();
                     for (Tile i : this.tiles)
@@ -410,8 +413,8 @@ public class Piece {
         // Rotation checking process
         for (Tile i : tiles) {
             // Initialize rotated coordinates
-            int r = getRotatedRows(i, rotation);
-            int c = getRotatedCols(i, rotation);
+            int r = getRotatedRow(i, rotation);
+            int c = getRotatedCol(i, rotation);
 
             if (r >= 0 && r < Board.BOARD_HEIGHT && c >= 0 && c < Board.BOARD_WIDTH) {
                 // Check each tile's rotated image for a collision (if its index is within bounds)
@@ -431,7 +434,7 @@ public class Piece {
             // Clear all display tiles before actually rotating
             this.clear();
 
-            // Initalize key based kick number
+            // Initalize key based on the current rotation number plus the type of rotation
             String key = String.valueOf(this.rot) + rotation;
 
             // Update the rotation counter
@@ -453,12 +456,13 @@ public class Piece {
             // Actually rotate
             for (Tile i : tiles) {
                 // Initialize rotated coordinates
-                int r = getRotatedRows(i, rotation);
-                int c = getRotatedCols(i, rotation);
+                int r = getRotatedRow(i, rotation);
+                int c = getRotatedCol(i, rotation);
 
                 // Offset by kick amount if a kick was successful
                 if (kick != -1) {
                     switch (rotation) {
+                        // (-y, +x)
                         case CLOCKWISE -> {
                             if (this.type == 'I') {
                                 r -= Kicks.iKicks.get(key).get(kick).get(0);
@@ -469,6 +473,7 @@ public class Piece {
                             }
                         }
 
+                        // (+y, -x)
                         case COUNTERCLOCKWISE -> {
                             if (this.type == 'I') {
                                 r += Kicks.iKicks.get(key).get(kick).get(0);
@@ -479,6 +484,7 @@ public class Piece {
                             }
                         }
 
+                        // (-x, -y)
                         case ONEEIGHTY -> {
                             if (this.type == 'I') {
                                 r -= Kicks.iKicks.get(key).get(kick).get(1);
@@ -498,7 +504,14 @@ public class Piece {
         }
     }
 
-    private int getRotatedRows(Tile tile, Rotation rotation) {
+    /**
+     * Gives row value for the rotated image of a Tile.
+     *
+     * @param tile the Tile being rotated
+     * @param rotation the direction of the rotation
+     * @return rotated tile's row value
+     */
+    private int getRotatedRow(Tile tile, Rotation rotation) {
         // Enable special rotation offset for I piece
         double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
 
@@ -514,7 +527,14 @@ public class Piece {
         return r;
     }
 
-    private int getRotatedCols(Tile tile, Rotation rotation) {
+    /**
+     * Gives column value for the rotated image of a Tile.
+     *
+     * @param tile the Tile being rotated
+     * @param rotation the direction of the rotation
+     * @return rotated tile's col value
+     */
+    private int getRotatedCol(Tile tile, Rotation rotation) {
         // Enable special rotation offset for I piece
         double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
 
@@ -545,9 +565,10 @@ public class Piece {
 
             for (Tile j : this.tiles) {
                 // Initialize rotated coordinates
-                int r = getRotatedRows(j, rotation);
-                int c = getRotatedCols(j, rotation);
+                int r = getRotatedRow(j, rotation);
+                int c = getRotatedCol(j, rotation);
 
+                // Add offset from kick table
                 if (this.type == 'I') {
                     r += Kicks.iKicks.get(key).get(i).get(1);
                     c += Kicks.iKicks.get(key).get(i).get(0);
@@ -590,6 +611,11 @@ public class Piece {
         return isClipping;
     }
 
+    /**
+     * Finds the lowest (or one of the lowest) Tiles in a Piece.
+     *
+     * @return the first Tile in this Piece's tiles with the lowest row value
+     */
     public Tile getLowestTile() {
         Tile lowestTile = this.tiles[0];
         for (Tile i : this.tiles) {
@@ -668,6 +694,6 @@ public class Piece {
         // Essentially swap the held piece and the current piece
         Character temp = hold;
         hold = piece.getType();
-        return (temp == null)? null : new Piece(temp);
+        return new Piece((temp == null)? Board.next.remove() : temp);
     }
 }
