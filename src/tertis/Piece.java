@@ -274,6 +274,7 @@ public class Piece {
     public void display() {
         for (Tile i : tiles)
             Board.displayBoard[i.getRow()][i.getCol()] = this.dc;
+
         /*if (this.row >= 0 && this.row < Board.BOARD_HEIGHT && this.col >= 0 && this.col < Board.BOARD_WIDTH) {
             Board.displayBoard[this.row][this.col] = DisplayColor.DEBUG;
             prevGhostTiles.add(new Tile(this.row, this.col));
@@ -411,8 +412,6 @@ public class Piece {
      * @param rotation direction to rotate
      */
     public void rotate(Rotation rotation) {
-        // Allow rotation if the piece isn't an O
-        //boolean canRot = Character.toUpperCase(this.type) != 'O';
         boolean canRot = true;
 
         // Rotation checking process
@@ -517,7 +516,7 @@ public class Piece {
      * @return rotated tile's row value
      */
     private int getRotatedRow(Tile tile, Rotation rotation) {
-        // Enable special rotation offset for I piece
+        // Enable special rotation offset for I and O pieces
         double rotationOffset;
         switch (this.type) {
             case 'I', 'i' -> rotationOffset = 0.5;
@@ -545,7 +544,7 @@ public class Piece {
      * @return rotated tile's col value
      */
     private int getRotatedCol(Tile tile, Rotation rotation) {
-        // Enable special rotation offset for I piece
+        // Enable special rotation offset for I and O pieces
         double rotationOffset;
         switch (this.type) {
             case 'I', 'i' -> rotationOffset = 0.5;
