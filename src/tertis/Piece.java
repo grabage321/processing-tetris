@@ -274,7 +274,7 @@ public class Piece {
     public void display() {
             for (Tile i : tiles)
                 Board.displayBoard[i.getRow()][i.getCol()] = this.dc;
-        //Board.displayBoard[this.row][this.col] = DisplayColor.DEBUG;
+        Board.displayBoard[this.row][this.col] = DisplayColor.DEBUG;
     }
 
     /**
@@ -402,13 +402,15 @@ public class Piece {
     }
 
     /**
-     * Rotates the piece clockwise, counter-clockwise, or 180 degrees. Unless it's the O.
+     * Rotates the piece clockwise, counter-clockwise, or 180 degrees. The O and I piece have
+     * special offsets.
      *
      * @param rotation direction to rotate
      */
     public void rotate(Rotation rotation) {
         // Allow rotation if the piece isn't an O
-        boolean canRot = Character.toUpperCase(this.type) != 'O';
+        //boolean canRot = Character.toUpperCase(this.type) != 'O';
+        boolean canRot = true;
 
         // Rotation checking process
         for (Tile i : tiles) {
@@ -513,15 +515,20 @@ public class Piece {
      */
     private int getRotatedRow(Tile tile, Rotation rotation) {
         // Enable special rotation offset for I piece
-        double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
+        double rotationOffset;
+        switch (this.type) {
+            case 'I', 'i' -> rotationOffset = 0.5;
+            case 'O', 'o' -> rotationOffset = -0.5;
+            default -> rotationOffset = 0;
+        }
 
         // Perform rotation math on the row variables based on the rotation chosen
-        int r = (int) (this.row + (this.col - tile.getCol() - iOffset) - iOffset);
+        int r = (int) (this.row + (this.col - tile.getCol() - rotationOffset) - rotationOffset);
         switch (rotation) {
             case COUNTERCLOCKWISE ->
-                    r = (int) (this.row - (this.col - tile.getCol() - iOffset) - iOffset);
+                    r = (int) (this.row - (this.col - tile.getCol() - rotationOffset) - rotationOffset);
             case ONEEIGHTY ->
-                    r = (int) (this.row + (this.row - tile.getRow() - iOffset) - iOffset);
+                    r = (int) (this.row + (this.row - tile.getRow() - rotationOffset) - rotationOffset);
         }
 
         return r;
@@ -536,15 +543,20 @@ public class Piece {
      */
     private int getRotatedCol(Tile tile, Rotation rotation) {
         // Enable special rotation offset for I piece
-        double iOffset = (Character.toUpperCase(this.type) == 'I') ? 0.5 : 0;
+        double rotationOffset;
+        switch (this.type) {
+            case 'I', 'i' -> rotationOffset = 0.5;
+            case 'O', 'o' -> rotationOffset = -0.5;
+            default -> rotationOffset = 0;
+        }
 
         // Perform rotation math on the row variables based on the rotation chosen
-        int c = (int) (this.col - (this.row - tile.getRow() - iOffset) - iOffset);
+        int c = (int) (this.col - (this.row - tile.getRow() - rotationOffset) - rotationOffset);
         switch (rotation) {
             case COUNTERCLOCKWISE ->
-                    c = (int) (this.col + (this.row - tile.getRow() - iOffset) - iOffset);
+                    c = (int) (this.col + (this.row - tile.getRow() - rotationOffset) - rotationOffset);
             case ONEEIGHTY ->
-                    c = (int) (this.col + (this.col - tile.getCol() - iOffset) - iOffset);
+                    c = (int) (this.col + (this.col - tile.getCol() - rotationOffset) - rotationOffset);
         }
 
         return c;
@@ -559,7 +571,7 @@ public class Piece {
     private int rotationKick(Rotation rotation) {
         int i;
         for (i = 0; i < Kicks.testCount; i++) {
-            boolean canRot = Character.toUpperCase(this.type) != 'O';
+            boolean canRot = true;
             String key = String.valueOf(this.rot) + rotation;
 
             for (Tile j : this.tiles) {
