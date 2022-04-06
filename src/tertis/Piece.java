@@ -681,7 +681,9 @@ public class Piece {
         // Add each tile's position to the board (display and actual)
         for (Tile i : piece.tiles) {
             Board.board[i.getRow()][i.getCol()] = 1;
-            Board.displayBoard[i.getRow()][i.getCol()] = piece.dc;
+
+            /*if (i.getRow() >= 0 && i.getRow() < Board.BOARD_HEIGHT && i.getCol() >= 0 && i.getCol() < Board.BOARD_WIDTH)
+                Board.displayBoard[i.getRow()][i.getCol()] = piece.dc;*/
         }
 
         // Clear out the array used for ghost piece tiles
