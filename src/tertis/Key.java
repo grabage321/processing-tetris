@@ -118,8 +118,8 @@ public class Key extends PApplet {
                 keyBind.put("move_right", right);
                 keyBind.put("move_drop", " ");
                 keyBind.put("move_hold", "s");
-                keyBind.put("rot_ccw", null);
-                keyBind.put("rot_180", null);
+                keyBind.put("rot_ccw", "a");
+                keyBind.put("rot_180", "d");
                 keyBind.put("rot_cw", up);
                 keyBind.put("misc_reset", f4);
                 keyBind.put("misc_keys", f5);
