@@ -2,10 +2,9 @@ package tertis;
 
 import processing.core.*;
 
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Queue;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.*;
 
 import static java.util.Collections.swap;
 
@@ -103,5 +102,76 @@ public class Board extends PApplet {
         }
 
         gameState = GameState.GAMEOVER;
+    }
+
+    /**
+     * Clears the board entirely, clears displayBoard entirely, clears next queue, clears held
+     * piece, clears testPiece, but will not clear you name. Your crimes speak for themselves.
+     */
+    public static void clearBoard() {
+        Piece.testPiece = null;
+        Piece.hold = null;
+        next.clear();
+
+        for (int i = 0; i < BOARD_HEIGHT; i++) {
+            for (int j = 0; j < BOARD_WIDTH; j++) {
+                board[i][j] = 0;
+                displayBoard[i][j] = null;
+            }
+        }
+    }
+
+    /**
+     * Takes in characters from board.txt and puts them as garbage on the starting grid.
+     * <p>
+     * Requirements for board.txt:
+     * <ul>
+     *  <li> The file's line count must be less than or equal to {@code BOARD_HEIGHT} (40 by
+     *  default)
+     *  <li> All of the file's lines must be less than or equal to {@code BOARD_WIDTH} (10 by
+     *  default)
+     *  <li> Reminder that spaces are most definitely significant
+     * <p>
+     * Right now spaces mean empty and any other character means garbage
+     *
+     * @throws FileNotFoundException
+     */
+    public static void setFromFile() throws FileNotFoundException {
+        String boardFile = "board.txt";
+        Scanner fileIn = new Scanner(new FileReader("src/tertis/" + boardFile));
+
+        ArrayList<String> lines = new ArrayList<>();
+        while (fileIn.hasNextLine())
+            lines.add(fileIn.nextLine());
+
+        if (lines.size() > BOARD_HEIGHT)
+            throw new RuntimeException("The file " + boardFile + " has too many lines");
+        for (String i : lines) {
+            if (i.length() > BOARD_WIDTH)
+                throw new RuntimeException("One or more line(s) in " + boardFile + " is too long");
+        }
+
+        for (int i = 1; i <= lines.size(); i++) {
+            int qwertyuiopasdfghjklzxcvbnm = lines.size() - i;
+
+            for (int j = 0; j < lines.get(qwertyuiopasdfghjklzxcvbnm).length(); j++) {
+                char temp = lines.get(qwertyuiopasdfghjklzxcvbnm).charAt(j);
+
+                switch (temp) {
+                    case ' ' -> {}
+                    case 'I', 'i' -> displayBoard[i - 1][j] = DisplayColor.I;
+                    case 'O', 'o' -> displayBoard[i - 1][j] = DisplayColor.O;
+                    case 'T', 't' -> displayBoard[i - 1][j] = DisplayColor.T;
+                    case 'S', 's' -> displayBoard[i - 1][j] = DisplayColor.S;
+                    case 'Z', 'z' -> displayBoard[i - 1][j] = DisplayColor.Z;
+                    case 'J', 'j' -> displayBoard[i - 1][j] = DisplayColor.J;
+                    case 'L', 'l' -> displayBoard[i - 1][j] = DisplayColor.L;
+                    default -> displayBoard[i - 1][j] = DisplayColor.LIGHTGRAY;
+                }
+
+                if (temp != ' ')
+                    board[i - 1][j] = 1;
+            }
+        }
     }
 }

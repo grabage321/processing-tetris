@@ -2,6 +2,7 @@ package tertis;
 
 import processing.core.*;
 
+import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.Queue;
 
@@ -27,71 +28,14 @@ public class Tertis extends PApplet {
         Board.board[0][5] = 1;
         Board.displayBoard[0][5] = DisplayColor.LIGHTGRAY;*/
 
-        String controlPreset = "me"; // "me", "jstris", "jonah", "alex"
+        // Loading from file test
+        /*try {
+            Board.setFromFile();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }*/
 
-        String left = "37";
-        String up = "38";
-        String right = "39";
-        String down = "40";
-
-        // Janky control preset switch
-        switch (controlPreset) {
-            case "me" -> {
-                // My preferred controls
-                Key.keyBind.put("move_up", "w");
-                Key.keyBind.put("move_down", "s");
-                Key.keyBind.put("move_left", "a");
-                Key.keyBind.put("move_right", "d");
-                Key.keyBind.put("move_drop", " ");
-                Key.keyBind.put("move_hold", "q");
-                Key.keyBind.put("rot_ccw", left);
-                Key.keyBind.put("rot_180", up);
-                Key.keyBind.put("rot_cw", right);
-                Key.setDas(100);
-                Key.setArr(16.66667f);
-            }
-
-            case "jstris" -> {
-                // Jstris default
-                Key.keyBind.put("move_up", "w");
-                Key.keyBind.put("move_down", down);
-                Key.keyBind.put("move_left", left);
-                Key.keyBind.put("move_right", right);
-                Key.keyBind.put("move_drop", " ");
-                Key.keyBind.put("move_hold", "c");
-                Key.keyBind.put("rot_ccw", up);
-                Key.keyBind.put("rot_180", "a");
-                Key.keyBind.put("rot_cw", "z");
-                Key.setDas(133);
-                Key.setArr(16);
-            }
-
-            case "jonah" -> {
-                // Jonah controls
-                Key.keyBind.put("move_up", "w");
-                Key.keyBind.put("move_down", down);
-                Key.keyBind.put("move_left", left);
-                Key.keyBind.put("move_right", right);
-                Key.keyBind.put("move_drop", up);
-                Key.keyBind.put("move_hold", " ");
-                Key.keyBind.put("rot_ccw", "c");
-                Key.keyBind.put("rot_180", "b");
-                Key.keyBind.put("rot_cw", "v");
-                Key.setDas(133.33333f);
-                Key.setArr(8.33333f);
-            }
-
-            case "alex" -> {
-                Key.keyBind.put("move_down",  down);
-                Key.keyBind.put("move_left",  left);
-                Key.keyBind.put("move_right", right);
-                Key.keyBind.put("move_drop",  " ");
-                Key.keyBind.put("move_hold",  "s");
-                Key.keyBind.put("rot_cw",     up);
-                Key.setDas(133);
-                Key.setArr(10);
-            }
-        }
+        Key.beyKindings();
 
         Board.gameState = GameState.GAMING;
     }
@@ -111,6 +55,7 @@ public class Tertis extends PApplet {
             // Set keys value to true, and put the current frame number in keyFrame
             Key.keyFrame.put(keyString, frameCount);
             Key.keys.put(keyString, Boolean.TRUE);
+            //System.out.println("Pressed key " + keyString);
         }
     }
 
@@ -132,6 +77,13 @@ public class Tertis extends PApplet {
 
         switch (Board.gameState) {
             case GAMING -> {
+                // Reset
+                if (Key.frame(Key.keyBind.get("misc_reset")) != null && Key.frame(Key.keyBind.get("misc_reset")) == frameCount - 1)
+                    Board.clearBoard();
+                // Cycle keybinds
+                if (Key.frame(Key.keyBind.get("misc_keys")) != null && Key.frame(Key.keyBind.get("misc_keys")) == frameCount - 1)
+                    Key.beyKindings();
+
                 // If the queue has less than 7 pieces, add a new bag's worth of pieces
                 if (Board.next.size() < Board.BAG_SIZE)
                     Board.generateBag();
@@ -150,6 +102,14 @@ public class Tertis extends PApplet {
 
                 boolean lockPiece = false;
 
+                // Rotations
+                if (Key.frame(Key.keyBind.get("rot_ccw")) != null && Key.frame(Key.keyBind.get("rot_ccw")) == frameCount - 1)
+                    Piece.testPiece.rotate(Rotation.COUNTERCLOCKWISE);
+                if (Key.frame(Key.keyBind.get("rot_180")) != null && Key.frame(Key.keyBind.get("rot_180")) == frameCount - 1)
+                    Piece.testPiece.rotate(Rotation.ONEEIGHTY);
+                if (Key.frame(Key.keyBind.get("rot_cw")) != null && Key.frame(Key.keyBind.get("rot_cw")) == frameCount - 1)
+                    Piece.testPiece.rotate(Rotation.CLOCKWISE);
+
                 // Directional moves
                 if (Key.repeat(Key.keyBind.get("move_up"), frameCount))
                     Piece.testPiece.move(Direction.UP);
@@ -165,14 +125,6 @@ public class Tertis extends PApplet {
                     while (Piece.testPiece.move(Direction.DOWN)) ;
                     lockPiece = true;
                 }
-
-                // Rotations
-                if (Key.frame(Key.keyBind.get("rot_ccw")) != null && Key.frame(Key.keyBind.get("rot_ccw")) == frameCount - 1)
-                    Piece.testPiece.rotate(Rotation.COUNTERCLOCKWISE);
-                if (Key.frame(Key.keyBind.get("rot_180")) != null && Key.frame(Key.keyBind.get("rot_180")) == frameCount - 1)
-                    Piece.testPiece.rotate(Rotation.ONEEIGHTY);
-                if (Key.frame(Key.keyBind.get("rot_cw")) != null && Key.frame(Key.keyBind.get("rot_cw")) == frameCount - 1)
-                    Piece.testPiece.rotate(Rotation.CLOCKWISE);
 
                 Piece.renderGhost(Piece.testPiece);
                 Piece.testPiece.display();
@@ -199,11 +151,20 @@ public class Tertis extends PApplet {
                 drawBoard();
                 keyTestDraw();
 
+                // Reset
+                if (Key.frame(Key.keyBind.get("misc_reset")) != null && Key.frame(Key.keyBind.get("misc_reset")) == frameCount - 1) {
+                    Board.clearBoard();
+                    Board.gameState = GameState.GAMING;
+                }
+
                 noStroke();
                 fill(128);
                 textSize(500);
                 text("GAME", -150, 350);
                 text("OVER", -120, 710);
+                fill(255);
+                textSize(50);
+                text("F4 to restart", 354, 380);
             }
         }
     }
@@ -264,6 +225,7 @@ public class Tertis extends PApplet {
         textSize(20);
         fill(128);
 
+        // TODO: make overlay less janky
         {
         text("Q", keyOverlayX, keyOverlayY + keyWidth - 5);
         text("W", keyOverlayX + keyWidth, keyOverlayY + keyWidth - 5);
@@ -276,6 +238,8 @@ public class Tertis extends PApplet {
         text("↓", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 6 - 5);
         text("→", keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 6 - 5);
         }
+
+        text("[F5] Controls: " + Key.controlPreset, keyOverlayX, keyOverlayY - 20);
     }
 
     public void drawBoard() {
