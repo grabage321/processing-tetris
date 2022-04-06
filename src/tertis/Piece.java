@@ -557,10 +557,9 @@ public class Piece {
      * @return first successful kick
      */
     private int rotationKick(Rotation rotation) {
-
         int i;
         for (i = 0; i < Kicks.testCount; i++) {
-            boolean canRot = true;
+            boolean canRot = Character.toUpperCase(this.type) != 'O';
             String key = String.valueOf(this.rot) + rotation;
 
             for (Tile j : this.tiles) {
@@ -586,7 +585,7 @@ public class Piece {
             }
 
             if (canRot) {
-                System.out.println("Kick success: " + key + " " + i);
+                //System.out.println("Kick success: " + key + " " + i);
                 break;
             }
         }
