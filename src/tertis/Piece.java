@@ -272,9 +272,12 @@ public class Piece {
      * Go through tiles and put each one on the display board.
      */
     public void display() {
-            for (Tile i : tiles)
-                Board.displayBoard[i.getRow()][i.getCol()] = this.dc;
-        Board.displayBoard[this.row][this.col] = DisplayColor.DEBUG;
+        for (Tile i : tiles)
+            Board.displayBoard[i.getRow()][i.getCol()] = this.dc;
+        /*if (this.row >= 0 && this.row < Board.BOARD_HEIGHT && this.col >= 0 && this.col < Board.BOARD_WIDTH) {
+            Board.displayBoard[this.row][this.col] = DisplayColor.DEBUG;
+            prevGhostTiles.add(new Tile(this.row, this.col));
+        }*/
     }
 
     /**
@@ -681,9 +684,7 @@ public class Piece {
         // Add each tile's position to the board (display and actual)
         for (Tile i : piece.tiles) {
             Board.board[i.getRow()][i.getCol()] = 1;
-
-            /*if (i.getRow() >= 0 && i.getRow() < Board.BOARD_HEIGHT && i.getCol() >= 0 && i.getCol() < Board.BOARD_WIDTH)
-                Board.displayBoard[i.getRow()][i.getCol()] = piece.dc;*/
+            Board.displayBoard[i.getRow()][i.getCol()] = piece.dc;
         }
 
         // Clear out the array used for ghost piece tiles
