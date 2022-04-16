@@ -29,11 +29,11 @@ public class Tertis extends PApplet {
         Board.displayBoard[0][5] = DisplayColor.LIGHTGRAY;*/
 
         // Loading from file test
-        /*try {
+        try {
             Board.setFromFile();
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }*/
+        }
 
         Key.beyKindings();
 
@@ -80,6 +80,14 @@ public class Tertis extends PApplet {
                 // Reset
                 if (Key.frame(Key.keyBind.get("misc_reset")) != null && Key.frame(Key.keyBind.get("misc_reset")) == frameCount - 1)
                     Board.clearBoard();
+                // Load from file
+                if (Key.frame(Key.keyBind.get("misc_loadfile")) != null && Key.frame(Key.keyBind.get("misc_loadfile")) == frameCount - 1) {
+                    try {
+                        Board.setFromFile();
+                    } catch (FileNotFoundException e) {
+                        e.printStackTrace();
+                    }
+                }
                 // Cycle keybinds
                 if (Key.frame(Key.keyBind.get("misc_keys")) != null && Key.frame(Key.keyBind.get("misc_keys")) == frameCount - 1)
                     Key.beyKindings();

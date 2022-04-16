@@ -70,8 +70,6 @@ public class Key extends PApplet {
                 keyBind.put("rot_ccw", left);
                 keyBind.put("rot_180", up);
                 keyBind.put("rot_cw", right);
-                keyBind.put("misc_reset", f4);
-                keyBind.put("misc_keys", f5);
                 setDas(100);
                 setArr(17f);
             }
@@ -87,8 +85,6 @@ public class Key extends PApplet {
                 keyBind.put("rot_ccw", up);
                 keyBind.put("rot_180", "a");
                 keyBind.put("rot_cw", "z");
-                keyBind.put("misc_reset", f4);
-                keyBind.put("misc_keys", f5);
                 setDas(133);
                 setArr(16);
             }
@@ -104,8 +100,6 @@ public class Key extends PApplet {
                 keyBind.put("rot_ccw", "c");
                 keyBind.put("rot_180", "b");
                 keyBind.put("rot_cw", "v");
-                keyBind.put("misc_reset", f4);
-                keyBind.put("misc_keys", f5);
                 setDas(133.33333f);
                 setArr(8.33333f);
             }
@@ -121,12 +115,14 @@ public class Key extends PApplet {
                 keyBind.put("rot_ccw", "a");
                 keyBind.put("rot_180", "d");
                 keyBind.put("rot_cw", up);
-                keyBind.put("misc_reset", f4);
-                keyBind.put("misc_keys", f5);
                 setDas(133);
                 setArr(10);
             }
         }
+
+        keyBind.put("misc_reset", f4);
+        keyBind.put("misc_loadfile", f4);
+        keyBind.put("misc_keys", f5);
 
         System.out.println("Now using the \"" + controlPreset + "\" control scheme");
     }

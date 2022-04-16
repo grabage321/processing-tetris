@@ -111,6 +111,7 @@ public class Board extends PApplet {
     public static void clearBoard() {
         Piece.testPiece = null;
         Piece.hold = null;
+        Piece.prevGhostTiles.clear();
         next.clear();
 
         for (int i = 0; i < BOARD_HEIGHT; i++) {
