@@ -1,5 +1,5 @@
 #### Wall kick tables, copied from the Tetris Wiki ####
-#### Except the 180s, because those aren't a thing ####
+#### Except  the 180s;  I stole those from  Jstris ####
 
 # Test 1 has been removed because these tables are only
 # used by the rotationKick() function,  which only runs
@@ -43,7 +43,7 @@ I
 1CCW    ( 2, 0)     (-1, 0)     ( 2, 1)     (-1,-2)
 2CCW    ( 1, 0)     (-2, 0)     ( 1,-2)     (-2, 1)
 3CCW    (-2, 0)     ( 1, 0)     (-2,-1)     ( 1, 2)
-0180    ( 0, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
-1180    ( 0, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
-2180    ( 0, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
-3180    ( 0, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+0180    ( 0, 1)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+1180    ( 1, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+2180    ( 0,-1)     ( 0, 0)     ( 0, 0)     ( 0, 0)
+3180    (-1, 0)     ( 0, 0)     ( 0, 0)     ( 0, 0)
