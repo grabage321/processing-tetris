@@ -27,7 +27,7 @@ public class Piece {
             // Initialize the FileReader for srskicks.txt
             Scanner fileIn = null;
             try {
-                fileIn = new Scanner(new FileReader("src/tertis/srskicks.txt"));
+                fileIn = new Scanner(new FileReader("src/tertis/srs+kicks.txt"));
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             }
