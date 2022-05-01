@@ -62,6 +62,21 @@ public class Key extends PApplet {
             case "me" -> {
                 // My preferred controls
                 keyBind.put("move_up", "w");
+                keyBind.put("move_down", down);
+                keyBind.put("move_left", left);
+                keyBind.put("move_right", right);
+                keyBind.put("move_drop", up);
+                keyBind.put("move_hold", " ");
+                keyBind.put("rot_ccw", "z");
+                keyBind.put("rot_180", "x");
+                keyBind.put("rot_cw", "c");
+                setDas(80);
+                setArr(10f);
+            }
+
+            /*case "me" -> {
+                // My preferred controls
+                keyBind.put("move_up", "w");
                 keyBind.put("move_down", "s");
                 keyBind.put("move_left", "a");
                 keyBind.put("move_right", "d");
@@ -72,7 +87,7 @@ public class Key extends PApplet {
                 keyBind.put("rot_cw", right);
                 setDas(100);
                 setArr(17f);
-            }
+            }*/
 
             case "jstris" -> {
                 // Jstris default
