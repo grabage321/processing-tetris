@@ -126,7 +126,7 @@ public class Tertis extends PApplet {
                 if (Key.repeat(Key.keyBind.get("move_right"), frameCount))
                     Piece.testPiece.move(Direction.RIGHT);
                 // Soft drop
-                if (Key.repeat(Key.keyBind.get("move_down"), frameCount))
+                if (Key.keys.get(Key.keyBind.get("move_down")) != null && Key.keys.get(Key.keyBind.get("move_down")))
                     while (Piece.testPiece.move(Direction.DOWN)) ;
                 // Hard drop
                 if (Key.frame(Key.keyBind.get("move_drop")) != null && Key.frame(Key.keyBind.get("move_drop")) == frameCount - 1) {
@@ -193,11 +193,11 @@ public class Tertis extends PApplet {
             rect(keyOverlayX, keyOverlayY, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get("w") != null && Key.keys.get("w"))
             rect(keyOverlayX + keyWidth, keyOverlayY, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("a") != null && Key.keys.get("a"))
+        if (Key.keys.get("z") != null && Key.keys.get("z"))
             rect(keyOverlayX, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("s") != null && Key.keys.get("s"))
+        if (Key.keys.get("x") != null && Key.keys.get("x"))
             rect(keyOverlayX + keyWidth, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("d") != null && Key.keys.get("d"))
+        if (Key.keys.get("c") != null && Key.keys.get("c"))
             rect(keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get(" ") != null && Key.keys.get(" "))
             rect(keyOverlayX, keyOverlayY + keyWidth * 2, keyWidth * 3 - 2, keyWidth - 2);
@@ -237,9 +237,9 @@ public class Tertis extends PApplet {
         {
         text("Q", keyOverlayX, keyOverlayY + keyWidth - 5);
         text("W", keyOverlayX + keyWidth, keyOverlayY + keyWidth - 5);
-        text("A", keyOverlayX, keyOverlayY + keyWidth * 2 - 5);
-        text("S", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 2 - 5);
-        text("D", keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 2 - 5);
+        text("Z", keyOverlayX, keyOverlayY + keyWidth * 2 - 5);
+        text("X", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 2 - 5);
+        text("C", keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 2 - 5);
         text("Space", keyOverlayX, keyOverlayY + keyWidth * 3 - 5);
         text("↑", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 5 - 5);
         text("←", keyOverlayX, keyOverlayY + keyWidth * 6 - 5);
