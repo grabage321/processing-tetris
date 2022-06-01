@@ -2,10 +2,11 @@
   <artifact name="Tertis">
     <output-path>$PROJECT_DIR$/out/artifacts/Tertis</output-path>
     <root id="root">
-      <element id="file-copy" path="C:/Program Files/processing-4.0b6/core/library/core.jar" />
       <element id="archive" name="processing-tetris.jar">
         <element id="module-output" name="processing-tetris" />
       </element>
+      <element id="file-copy" path="/etc/processing-4.0b6/core/library/core.jar" />
+      <element id="file-copy" path="$PROJECT_DIR$/board.txt" />
     </root>
   </artifact>
 </component>

@@ -8,7 +8,7 @@ import java.util.Queue;
 
 public class Tertis extends PApplet {
     public void setup() {
-        frameRate((float) Board.FPS);
+        frameRate(Board.FPS);
 
         //temp.testPieceSetup();
 

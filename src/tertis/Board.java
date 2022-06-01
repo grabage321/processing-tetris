@@ -2,8 +2,7 @@ package tertis;
 
 import processing.core.*;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 
 import static java.util.Collections.swap;
@@ -132,14 +131,20 @@ public class Board extends PApplet {
      *  <li> All of the file's lines must be less than or equal to {@code BOARD_WIDTH} (10 by
      *  default)
      *  <li> Reminder that spaces are most definitely significant
+     * </ul>
      * <p>
-     * Right now spaces mean empty and any other character means garbage
+     * Spaces are for empty tiles; 'i', 'o', 't', 's', 'z', 'j', 'l' (capital or lowercase) are for
+     * the corresponding piece colors; any other character means garbage (light gray). The lines in
+     * the file will be translated to tiles on the board, starting with the last line of the file
+     * on the very bottom of the board. For example, with one line reading {@code "### ######"}, the
+     * board will be loaded as a single line of garbage at the very bottom with a gap in the fourth
+     * column.
      *
      * @throws FileNotFoundException
      */
     public static void setFromFile() throws FileNotFoundException {
         String boardFile = "board.txt";
-        Scanner fileIn = new Scanner(new FileReader("src/tertis/" + boardFile));
+        Scanner fileIn = new Scanner(new FileReader(boardFile));
 
         ArrayList<String> lines = new ArrayList<>();
         while (fileIn.hasNextLine())

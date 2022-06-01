@@ -1,7 +1,6 @@
 package tertis;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -25,68 +24,92 @@ public class Piece {
 
         static {
             // Initialize the FileReader for srskicks.txt
-            Scanner fileIn = null;
-            try {
-                fileIn = new Scanner(new FileReader("src/tertis/srs+kicks.txt"));
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
+//            Scanner fileIn = null;
+//            try {
+//                fileIn = new Scanner(new FileReader("src/tertis/srs+kicks.txt"));
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+            BufferedReader fileIn;
+            InputStream a = Board.class.getClassLoader().getResourceAsStream("srs+kicks.txt");
+//            InputStream a = Board.class.getClassLoader().getResourceAsStream("test.txt");
+
+            if (a == null) {
+                throw new RuntimeException("A kick table could not be loaded");
+            } else {
+                fileIn = new BufferedReader(new InputStreamReader(a));
+
+                /*String line;
+                try {
+                    while ((line = fileIn.readLine()) != null) {
+                        System.out.println(line.trim());
+                    }
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }*/
             }
 
             // Initialize the line parsing regex and testCount
             Pattern p = kickTableRegex(4);
 
             // File reading
-            while (fileIn != null && fileIn.hasNextLine()) {
-                // Trim whitespace from the beginning and end of each line read
-                String line = fileIn.nextLine().trim();
+            String line = null;
+            try {
+                while ((line = fileIn.readLine()) != null) {
+                    // Trim the line
+                    line = line.trim();
 
-                // If the line is not blank and doesn't begin with a comment character, parse it
-                if (!line.isEmpty() && line.charAt(0) != '#') {
+                    // If the line is not blank and doesn't begin with a comment character, parse it
+                    if (!line.isEmpty() && line.charAt(0) != '#') {
 
-                    if (line.toUpperCase().startsWith("TEST_COUNT=")) {
-                        // If the line begins with "TEST_COUNT=" then parse the following number and
-                        // pass it into kickTableRegex()
-                        int newTestCount = parseInt(line.substring(11).trim());
-                        // Update the line parsing regex and testCount
-                        p = kickTableRegex(newTestCount);
-                    } else if (line.equalsIgnoreCase("JLSTZ")) {
-                        // If the line is "JLSTZ" iHateMyselfForDoingThis to 1
-                        iHateMyselfForDoingThis = 1;
-                    } else if (line.equalsIgnoreCase("I")) {
-                        // If the line is "I" iHateMyselfForDoingThis to 1
-                        iHateMyselfForDoingThis = 2;
-                    } else {
-                        // Set up the matcher
-                        Matcher m = p.matcher(line);
-
-                        // Match the regex, and make sure the group count is 2 + the number of
-                        // coordinate pairs expected
-                        if (m.find() && m.groupCount() == 2 + testCount * 2) {
-                            // The key for the HashMap should be the current rotation state (number
-                            // 0–3), followed by the rotation's abbreviation ("CW", "CCW", or "180")
-                            String key = m.group(1) + m.group(2).toUpperCase();
-
-                            // Create an ArrayList of Integer pairs that represent the offsets for
-                            // each kick test
-                            ArrayList<ArrayList<Integer>> tests = new ArrayList<>();
-                            for (int i = 3; i < 2 + testCount * 2; i += 2) {
-                                tests.add(new ArrayList<>(List.of(
-                                        parseInt(m.group(i)),
-                                        parseInt(m.group(i + 1))
-                                )));
-                            }
-
-                            // Finally, put the current entry into either the jlstz or i kick table
-                            // (depends on which iHateMyselfForDoingThis was set to last)
-                            if (iHateMyselfForDoingThis == 1)
-                                jlstzKicks.put(key, tests);
-                            else if (iHateMyselfForDoingThis == 2)
-                                iKicks.put(key, tests);
+                        if (line.toUpperCase().startsWith("TEST_COUNT=")) {
+                            // If the line begins with "TEST_COUNT=" then parse the following number
+                            // and pass it into kickTableRegex()
+                            int newTestCount = parseInt(line.substring(11).trim());
+                            // Update the line parsing regex and testCount
+                            p = kickTableRegex(newTestCount);
+                        } else if (line.equalsIgnoreCase("JLSTZ")) {
+                            // If the line is "JLSTZ" iHateMyselfForDoingThis to 1
+                            iHateMyselfForDoingThis = 1;
+                        } else if (line.equalsIgnoreCase("I")) {
+                            // If the line is "I" iHateMyselfForDoingThis to 1
+                            iHateMyselfForDoingThis = 2;
                         } else {
-                            throw new RuntimeException("Improperly formatted kick table");
+                            // Set up the matcher
+                            Matcher m = p.matcher(line);
+
+                            // Match the regex, and make sure the group count is 2 + the number of
+                            // coordinate pairs expected
+                            if (m.find() && m.groupCount() == 2 + testCount * 2) {
+                                // The key for the HashMap should be the current rotation state
+                                // (number 0–3), followed by the rotation's abbreviation ("CW",
+                                // "CCW", or "180")
+                                String key = m.group(1) + m.group(2).toUpperCase();
+
+                                // Create an ArrayList of Integer pairs that represent the offsets
+                                // for each kick test
+                                ArrayList<ArrayList<Integer>> tests = new ArrayList<>();
+                                for (int i = 3; i < 2 + testCount * 2; i += 2) {
+                                    tests.add(new ArrayList<>(List.of(
+                                            parseInt(m.group(i)),
+                                            parseInt(m.group(i + 1))
+                                    )));
+                                }
+
+                                // Finally, put the current entry into either the jlstz or i kick
+                                // table (depends on which iHateMyselfForDoingThis was set to last)
+                                if (iHateMyselfForDoingThis == 1)
+                                    jlstzKicks.put(key, tests);
+                                else if (iHateMyselfForDoingThis == 2)
+                                    iKicks.put(key, tests);
+                            } else {
+                                throw new RuntimeException("Improperly formatted kick table");
+                            }
                         }
                     }
                 }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
             }
         }
 
