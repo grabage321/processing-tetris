@@ -71,7 +71,7 @@ public class Key extends PApplet {
                 keyBind.put("rot_180", "x");
                 keyBind.put("rot_cw", "c");
                 setDas(80);
-                setArr(10f);
+                setArr(16.66666f);
             }
 
             /*case "me" -> {
