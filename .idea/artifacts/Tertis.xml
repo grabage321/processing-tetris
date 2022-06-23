@@ -7,6 +7,7 @@
       </element>
       <element id="file-copy" path="/etc/processing-4.0b6/core/library/core.jar" />
       <element id="file-copy" path="$PROJECT_DIR$/board.txt" />
+      <element id="file-copy" path="C:/Program Files/processing-4.0b6/core/library/core.jar" />
     </root>
   </artifact>
 </component>

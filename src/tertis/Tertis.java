@@ -189,25 +189,25 @@ public class Tertis extends PApplet {
         fill(255);
 
         {
-        if (Key.keys.get("q") != null && Key.keys.get("q"))
+        /*if (Key.keys.get("q") != null && Key.keys.get("q"))
             rect(keyOverlayX, keyOverlayY, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get("w") != null && Key.keys.get("w"))
-            rect(keyOverlayX + keyWidth, keyOverlayY, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("z") != null && Key.keys.get("z"))
+            rect(keyOverlayX + keyWidth, keyOverlayY, keyWidth - 2, keyWidth - 2);*/
+        if (Key.keys.get(Key.keyBind.get("rot_ccw")) != null && Key.keys.get(Key.keyBind.get("rot_ccw")))
             rect(keyOverlayX, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("x") != null && Key.keys.get("x"))
+        if (Key.keys.get(Key.keyBind.get("rot_180")) != null && Key.keys.get(Key.keyBind.get("rot_180")))
             rect(keyOverlayX + keyWidth, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("c") != null && Key.keys.get("c"))
+        if (Key.keys.get(Key.keyBind.get("rot_cw")) != null && Key.keys.get(Key.keyBind.get("rot_cw")))
             rect(keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get(" ") != null && Key.keys.get(" "))
+        if (Key.keys.get(Key.keyBind.get("move_hold")) != null && Key.keys.get(Key.keyBind.get("move_hold")))
             rect(keyOverlayX, keyOverlayY + keyWidth * 2, keyWidth * 3 - 2, keyWidth - 2);
-        if (Key.keys.get("38") != null && Key.keys.get("38"))
+        if (Key.keys.get(Key.keyBind.get("move_drop")) != null && Key.keys.get(Key.keyBind.get("move_drop")))
             rect(keyOverlayX + keyWidth, keyOverlayY + keyWidth * 4, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("37") != null && Key.keys.get("37"))
+        if (Key.keys.get(Key.keyBind.get("move_left")) != null && Key.keys.get(Key.keyBind.get("move_left")))
             rect(keyOverlayX, keyOverlayY + keyWidth * 5, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("40") != null && Key.keys.get("40"))
+        if (Key.keys.get(Key.keyBind.get("move_down")) != null && Key.keys.get(Key.keyBind.get("move_down")))
             rect(keyOverlayX + keyWidth, keyOverlayY + keyWidth * 5, keyWidth - 2, keyWidth - 2);
-        if (Key.keys.get("39") != null && Key.keys.get("39"))
+        if (Key.keys.get(Key.keyBind.get("move_right")) != null && Key.keys.get(Key.keyBind.get("move_right")))
             rect(keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 5, keyWidth - 2, keyWidth - 2);
         }
 
@@ -217,12 +217,13 @@ public class Tertis extends PApplet {
         noFill();
 
         {
-        rect(keyOverlayX - 1,                keyOverlayY - 1,                keyWidth - 1, keyWidth - 1);
-        rect(keyOverlayX + keyWidth - 1,     keyOverlayY - 1,                keyWidth - 1, keyWidth - 1);
+        /*rect(keyOverlayX - 1,                keyOverlayY - 1,                keyWidth - 1, keyWidth - 1);
+        rect(keyOverlayX + keyWidth - 1,     keyOverlayY - 1,                keyWidth - 1, keyWidth - 1);*/
         rect(keyOverlayX - 1,                keyOverlayY + keyWidth - 1,     keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX + keyWidth - 1,     keyOverlayY + keyWidth - 1,     keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX + keyWidth * 2 - 1, keyOverlayY + keyWidth - 1,     keyWidth - 1, keyWidth - 1);
-        rect(keyOverlayX - 1,                keyOverlayY + keyWidth * 2 - 1, keyWidth * 3 - 1, keyWidth - 1);
+        rect(keyOverlayX + keyWidth - 1,     keyOverlayY + keyWidth * 2 - 1, keyWidth - 1, keyWidth - 1);
+
         rect(keyOverlayX + keyWidth - 1,     keyOverlayY + keyWidth * 4 - 1, keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX - 1,                keyOverlayY + keyWidth * 5 - 1, keyWidth - 1, keyWidth - 1);
         rect(keyOverlayX + keyWidth - 1,     keyOverlayY + keyWidth * 5 - 1, keyWidth - 1, keyWidth - 1);
@@ -235,13 +236,13 @@ public class Tertis extends PApplet {
 
         // TODO: make overlay less janky
         {
-        text("Q", keyOverlayX, keyOverlayY + keyWidth - 5);
-        text("W", keyOverlayX + keyWidth, keyOverlayY + keyWidth - 5);
-        text("Z", keyOverlayX, keyOverlayY + keyWidth * 2 - 5);
-        text("X", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 2 - 5);
-        text("C", keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 2 - 5);
-        text("Space", keyOverlayX, keyOverlayY + keyWidth * 3 - 5);
-        text("↑", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 5 - 5);
+        /*text("Q", keyOverlayX, keyOverlayY + keyWidth - 5);
+        text("W", keyOverlayX + keyWidth, keyOverlayY + keyWidth - 5);*/
+        text("CCW", keyOverlayX, keyOverlayY + keyWidth * 2 - 5);
+        text("180", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 2 - 5);
+        text("CW", keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 2 - 5);
+        text("Hold", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 3 - 5);
+        text("↓↓", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 5 - 5);
         text("←", keyOverlayX, keyOverlayY + keyWidth * 6 - 5);
         text("↓", keyOverlayX + keyWidth, keyOverlayY + keyWidth * 6 - 5);
         text("→", keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth * 6 - 5);
