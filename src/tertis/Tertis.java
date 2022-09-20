@@ -200,7 +200,7 @@ public class Tertis extends PApplet {
         if (Key.keys.get(Key.keyBind.get("rot_cw")) != null && Key.keys.get(Key.keyBind.get("rot_cw")))
             rect(keyOverlayX + keyWidth * 2, keyOverlayY + keyWidth, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get(Key.keyBind.get("move_hold")) != null && Key.keys.get(Key.keyBind.get("move_hold")))
-            rect(keyOverlayX, keyOverlayY + keyWidth * 2, keyWidth * 3 - 2, keyWidth - 2);
+            rect(keyOverlayX + keyWidth, keyOverlayY + keyWidth * 2, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get(Key.keyBind.get("move_drop")) != null && Key.keys.get(Key.keyBind.get("move_drop")))
             rect(keyOverlayX + keyWidth, keyOverlayY + keyWidth * 4, keyWidth - 2, keyWidth - 2);
         if (Key.keys.get(Key.keyBind.get("move_left")) != null && Key.keys.get(Key.keyBind.get("move_left")))
