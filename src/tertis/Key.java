@@ -43,12 +43,12 @@ public class Key extends PApplet {
      * I swear this function is temporary
      */
     public static void beyKindings() {
-        String left = "37";
-        String up = "38";
-        String right = "39";
-        String down = "40";
-        String f4 = "115";
-        String f5 = "116";
+        String LEFT = "37";
+        String UP = "38";
+        String RIGHT = "39";
+        String DOWN = "40";
+        String F4 = "115";
+        String F5 = "116";
 
         switch (controlPreset) {
             case "me" -> controlPreset = "alex";
@@ -62,10 +62,10 @@ public class Key extends PApplet {
             case "me" -> {
                 // My preferred controls
                 keyBind.put("move_up", "w");
-                keyBind.put("move_down", down);
-                keyBind.put("move_left", left);
-                keyBind.put("move_right", right);
-                keyBind.put("move_drop", up);
+                keyBind.put("move_down", DOWN);
+                keyBind.put("move_left", LEFT);
+                keyBind.put("move_right", RIGHT);
+                keyBind.put("move_drop", UP);
                 keyBind.put("move_hold", " ");
                 keyBind.put("rot_ccw", "z");
                 keyBind.put("rot_180", "x");
@@ -74,30 +74,15 @@ public class Key extends PApplet {
                 setArr(16.66666f);
             }
 
-            /*case "me" -> {
-                // My preferred controls
-                keyBind.put("move_up", "w");
-                keyBind.put("move_down", "s");
-                keyBind.put("move_left", "a");
-                keyBind.put("move_right", "d");
-                keyBind.put("move_drop", " ");
-                keyBind.put("move_hold", "q");
-                keyBind.put("rot_ccw", left);
-                keyBind.put("rot_180", up);
-                keyBind.put("rot_cw", right);
-                setDas(100);
-                setArr(17f);
-            }*/
-
             case "jstris" -> {
                 // Jstris default
                 keyBind.put("move_up", "w");
-                keyBind.put("move_down", down);
-                keyBind.put("move_left", left);
-                keyBind.put("move_right", right);
+                keyBind.put("move_down", DOWN);
+                keyBind.put("move_left", LEFT);
+                keyBind.put("move_right", RIGHT);
                 keyBind.put("move_drop", " ");
                 keyBind.put("move_hold", "c");
-                keyBind.put("rot_ccw", up);
+                keyBind.put("rot_ccw", UP);
                 keyBind.put("rot_180", "a");
                 keyBind.put("rot_cw", "z");
                 setDas(133);
@@ -107,10 +92,10 @@ public class Key extends PApplet {
             case "jonah" -> {
                 // Jonah controls
                 keyBind.put("move_up", "w");
-                keyBind.put("move_down", down);
-                keyBind.put("move_left", left);
-                keyBind.put("move_right", right);
-                keyBind.put("move_drop", up);
+                keyBind.put("move_down", DOWN);
+                keyBind.put("move_left", LEFT);
+                keyBind.put("move_right", RIGHT);
+                keyBind.put("move_drop", UP);
                 keyBind.put("move_hold", " ");
                 keyBind.put("rot_ccw", "c");
                 keyBind.put("rot_180", "b");
@@ -122,22 +107,22 @@ public class Key extends PApplet {
             case "alex" -> {
                 // Alex controls
                 keyBind.put("move_up", null);
-                keyBind.put("move_down", down);
-                keyBind.put("move_left", left);
-                keyBind.put("move_right", right);
+                keyBind.put("move_down", DOWN);
+                keyBind.put("move_left", LEFT);
+                keyBind.put("move_right", RIGHT);
                 keyBind.put("move_drop", " ");
                 keyBind.put("move_hold", "s");
                 keyBind.put("rot_ccw", "a");
                 keyBind.put("rot_180", "d");
-                keyBind.put("rot_cw", up);
+                keyBind.put("rot_cw", UP);
                 setDas(133);
                 setArr(10);
             }
         }
 
-        keyBind.put("misc_reset", f4);
-        keyBind.put("misc_loadfile", f4);
-        keyBind.put("misc_keys", f5);
+        keyBind.put("misc_reset", F4);
+        keyBind.put("misc_loadfile", F4);
+        keyBind.put("misc_keys", F5);
 
         System.out.println("Now using the \"" + controlPreset + "\" control scheme");
     }
