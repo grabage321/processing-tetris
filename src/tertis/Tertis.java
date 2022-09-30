@@ -134,6 +134,9 @@ public class Tertis extends PApplet {
                     lockPiece = true;
                 }
 
+                if ((int) (frameCount % Board.FPS) == 0)
+                    Piece.testPiece.move(Direction.DOWN);
+
                 Piece.renderGhost(Piece.testPiece);
                 Piece.testPiece.display();
 
