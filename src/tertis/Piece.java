@@ -24,29 +24,13 @@ public class Piece {
 
         static {
             // Initialize the FileReader for srskicks.txt
-//            Scanner fileIn = null;
-//            try {
-//                fileIn = new Scanner(new FileReader("src/tertis/srs+kicks.txt"));
-//            } catch (FileNotFoundException e) {
-//                e.printStackTrace();
-//            }
             BufferedReader fileIn;
             InputStream a = Board.class.getClassLoader().getResourceAsStream("srs+kicks.txt");
-//            InputStream a = Board.class.getClassLoader().getResourceAsStream("test.txt");
 
             if (a == null) {
                 throw new RuntimeException("A kick table could not be loaded");
             } else {
                 fileIn = new BufferedReader(new InputStreamReader(a));
-
-                /*String line;
-                try {
-                    while ((line = fileIn.readLine()) != null) {
-                        System.out.println(line.trim());
-                    }
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }*/
             }
 
             // Initialize the line parsing regex and testCount
@@ -130,6 +114,10 @@ public class Piece {
     private int row;
     private int col;
     private int rot; // Clockwise, starting upward: 0 -> 1 -> 2 -> 3 -> 0
+    // TODO: Set this to half a second, function for being on ground? Also have function reset whe lowest tile does the thing.
+    private int lockdown;
+    // TODO: This should count down from 15
+    private int lockdownResets;
     private final char type;
     private DisplayColor dc;
     private Tile[] tiles = new Tile[4];

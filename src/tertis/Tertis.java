@@ -2,6 +2,7 @@ package tertis;
 
 import processing.core.*;
 
+import java.awt.*;
 import java.io.FileNotFoundException;
 import java.util.ArrayDeque;
 import java.util.Queue;
@@ -134,8 +135,14 @@ public class Tertis extends PApplet {
                     lockPiece = true;
                 }
 
+                // G...gg.g.g..g..g...g.g..gg.r.a..v.it....t.y
                 if ((int) (frameCount % Board.FPS) == 0)
                     Piece.testPiece.move(Direction.DOWN);
+
+                // If piece is touching the ground
+                if (Piece.testPiece != null && !Piece.testPiece.canMove(Direction.DOWN)) {
+                    // Do something
+                }
 
                 Piece.renderGhost(Piece.testPiece);
                 Piece.testPiece.display();

@@ -133,12 +133,13 @@ public class Board extends PApplet {
      *  <li> Reminder that spaces are most definitely significant
      * </ul>
      * <p>
-     * Spaces are for empty tiles; 'i', 'o', 't', 's', 'z', 'j', 'l' (capital or lowercase) are for
-     * the corresponding piece colors; any other character means garbage (light gray). The lines in
-     * the file will be translated to tiles on the board, starting with the last line of the file
-     * on the very bottom of the board. For example, with one line reading {@code "### ######"}, the
-     * board will be loaded as a single line of garbage at the very bottom with a gap in the fourth
-     * column.
+     * Spaces become empty tiles; {@code 'i'}, {@code 'o'}, {@code 't'}, {@code 's'}, {@code 'z'},
+     * {@code 'j'}, {@code 'l'} (capital or lowercase) become the corresponding piece colors; any
+     * other character become garbage (light gray). The lines in the file will be translated to rows
+     * of tiles on the board, and the last line of the file will correspond to the bottom row on the
+     * board. For example, if the file contains one line reading {@code "### ######"}, the board
+     * will be loaded as a single line of garbage at the very bottom with a gap in the fourth
+     * column from the left.
      *
      * @throws FileNotFoundException
      */
