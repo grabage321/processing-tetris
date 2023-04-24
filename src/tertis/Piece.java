@@ -271,6 +271,13 @@ public class Piece {
     }
 
     /**
+     * @return This Piece's rot(ation)
+     */
+    public int getRot() {
+        return rot;
+    }
+
+    /**
      * @return This Piece's type
      * <p>
      * {@code I, i, O, o, T, t, S, s, Z, z, J, j, L, or l}
@@ -286,6 +293,7 @@ public class Piece {
         for (Tile i : tiles)
             Board.displayBoard[i.getRow()][i.getCol()] = this.dc;
 
+        // Show the "center" of each piece with a white square
         /*if (this.row >= 0 && this.row < Board.BOARD_HEIGHT && this.col >= 0 && this.col < Board.BOARD_WIDTH) {
             Board.displayBoard[this.row][this.col] = DisplayColor.DEBUG;
             prevGhostTiles.add(new Tile(this.row, this.col));
@@ -536,8 +544,10 @@ public class Piece {
         }
 
         // Perform rotation math on the row variables based on the rotation chosen
-        int r = (int) (this.row + (this.col - tile.getCol() - rotationOffset) - rotationOffset);
+        int r = this.row;
         switch (rotation) {
+            case CLOCKWISE ->
+                    r = (int) (this.row + (this.col - tile.getCol() - rotationOffset) - rotationOffset);
             case COUNTERCLOCKWISE ->
                     r = (int) (this.row - (this.col - tile.getCol() - rotationOffset) - rotationOffset);
             case ONEEIGHTY ->
@@ -564,8 +574,10 @@ public class Piece {
         }
 
         // Perform rotation math on the row variables based on the rotation chosen
-        int c = (int) (this.col - (this.row - tile.getRow() - rotationOffset) - rotationOffset);
+        int c = this.col;
         switch (rotation) {
+            case CLOCKWISE ->
+                    c = (int) (this.col - (this.row - tile.getRow() - rotationOffset) - rotationOffset);
             case COUNTERCLOCKWISE ->
                     c = (int) (this.col + (this.row - tile.getRow() - rotationOffset) - rotationOffset);
             case ONEEIGHTY ->

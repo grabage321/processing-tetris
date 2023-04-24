@@ -54,9 +54,10 @@ public class Tertis extends PApplet {
             // Nothing if the key is still being held
         } else {
             // Set keys value to true, and put the current frame number in keyFrame
+            // TODO: Switch this to numeric key codes only to avoid ambiguity (like with numpad)
             Key.keyFrame.put(keyString, frameCount);
             Key.keys.put(keyString, Boolean.TRUE);
-            //System.out.println("Pressed key " + keyString);
+//            System.out.println("Pressed key '" + keyString + "', with code " + keyCode);
         }
     }
 
@@ -119,16 +120,21 @@ public class Tertis extends PApplet {
                 if (Key.frame(Key.keyBind.get("rot_cw")) != null && Key.frame(Key.keyBind.get("rot_cw")) == frameCount - 1)
                     Piece.testPiece.rotate(Rotation.CLOCKWISE);
 
-                // Directional moves
-                if (Key.repeat(Key.keyBind.get("move_up"), frameCount))
+                // Move up THIS IS DEBUG I SWEAR
+                if (Key.frame(Key.keyBind.get("move_up")) != null && Key.frame(Key.keyBind.get("move_up")) == frameCount - 1)
                     Piece.testPiece.move(Direction.UP);
-                if (Key.repeat(Key.keyBind.get("move_left"), frameCount))
-                    Piece.testPiece.move(Direction.LEFT);
-                if (Key.repeat(Key.keyBind.get("move_right"), frameCount))
-                    Piece.testPiece.move(Direction.RIGHT);
+
+                switch (Key.directionalInput(Key.keyBind.get("move_left"), Key.keyBind.get("move_right"), frameCount)) {
+                    case 1 -> Piece.testPiece.move(Direction.LEFT);
+                    case 2 -> Piece.testPiece.move(Direction.RIGHT);
+                    case 3 -> { while (Piece.testPiece.move(Direction.LEFT));}
+                    case 4 -> { while (Piece.testPiece.move(Direction.RIGHT));}
+                }
+
                 // Soft drop
                 if (Key.keys.get(Key.keyBind.get("move_down")) != null && Key.keys.get(Key.keyBind.get("move_down")))
                     while (Piece.testPiece.move(Direction.DOWN)) ;
+
                 // Hard drop
                 if (Key.frame(Key.keyBind.get("move_drop")) != null && Key.frame(Key.keyBind.get("move_drop")) == frameCount - 1) {
                     while (Piece.testPiece.move(Direction.DOWN)) ;
@@ -136,8 +142,8 @@ public class Tertis extends PApplet {
                 }
 
                 // G...gg.g.g..g..g...g.g..gg.r.a..v.it....t.y
-                if ((int) (frameCount % Board.FPS) == 0)
-                    Piece.testPiece.move(Direction.DOWN);
+                /*if ((int) (frameCount % Board.FPS) == 0)
+                    Piece.testPiece.move(Direction.DOWN);*/
 
                 // If piece is touching the ground
                 if (Piece.testPiece != null && !Piece.testPiece.canMove(Direction.DOWN)) {
@@ -162,6 +168,12 @@ public class Tertis extends PApplet {
                     Board.lineClear();
                     drawBoard();
                     keyTestDraw();
+
+                    // DEBUG: display current piece rotation
+                    textSize(20);
+                    fill(255);
+                    if (Piece.testPiece != null)
+                        text(Piece.testPiece.getRot(), 50, 50);
                 }
             }
 

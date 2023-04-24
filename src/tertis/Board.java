@@ -36,6 +36,7 @@ public class Board extends PApplet {
         // Initialize bag of pieces
         ArrayList<Character> pieces = new ArrayList<>(
                 Arrays.asList('I', 'O', 'T', 'S', 'Z', 'J', 'L')
+//                Arrays.asList('J', 'J', 'J', 'J', 'J', 'J', 'J')
         );
 
         // Fisher-Yates shuffle I guess? Thanks, Wikipedia.
