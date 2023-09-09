@@ -172,6 +172,10 @@ public class Key extends PApplet {
             case "me" -> {
                 // My preferred controls
                 keyBind.put("move_up", "w");
+//                keyBind.put("move_down", DOWN);
+//                keyBind.put("move_left", LEFT);
+//                keyBind.put("move_right", RIGHT);
+//                keyBind.put("move_drop", UP);
                 keyBind.put("move_down", "2");
                 keyBind.put("move_left", "1");
                 keyBind.put("move_right", "3");
@@ -180,7 +184,7 @@ public class Key extends PApplet {
                 keyBind.put("rot_ccw", "z");
                 keyBind.put("rot_180", "x");
                 keyBind.put("rot_cw", "c");
-                setDas(100);
+                setDas(90);
                 setArr(0);
                 setCancelDas(true);
             }

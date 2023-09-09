@@ -82,7 +82,8 @@ public class Tertis extends PApplet {
                 // Reset
                 if (Key.frame(Key.keyBind.get("misc_reset")) != null && Key.frame(Key.keyBind.get("misc_reset")) == frameCount - 1)
                     Board.clearBoard();
-                // Load from file
+
+                // Load board state from file
                 if (Key.frame(Key.keyBind.get("misc_loadfile")) != null && Key.frame(Key.keyBind.get("misc_loadfile")) == frameCount - 1) {
                     try {
                         Board.setFromFile();
@@ -90,24 +91,26 @@ public class Tertis extends PApplet {
                         e.printStackTrace();
                     }
                 }
+
                 // Cycle keybinds
                 if (Key.frame(Key.keyBind.get("misc_keys")) != null && Key.frame(Key.keyBind.get("misc_keys")) == frameCount - 1)
                     Key.beyKindings();
 
-                // If the queue has less than 7 pieces, add a new bag's worth of pieces
+                // If the queue has less than 7 (bag size) pieces, add a new bag's worth of pieces
                 if (Board.next.size() < Board.BAG_SIZE)
                     Board.generateBag();
+
+                // Pull the next piece from the queue
+                if (Piece.testPiece == null) {
+                    //System.out.println("Generating new " + Board.next.peek() + " piece");
+                    Piece.testPiece = new Piece(Board.next.remove());
+                    Piece.heldThisRound = false;
+                }
 
                 // Hold
                 if (Key.frame(Key.keyBind.get("move_hold")) != null && Key.frame(Key.keyBind.get("move_hold")) == frameCount - 1 && !Piece.heldThisRound) {
                     Piece.testPiece = Piece.hold(Piece.testPiece);
                     Piece.heldThisRound = true;
-                }
-
-                if (Piece.testPiece == null) {
-                    //System.out.println("Generating new " + Board.next.peek() + " piece");
-                    Piece.testPiece = new Piece(Board.next.remove());
-                    Piece.heldThisRound = false;
                 }
 
                 boolean lockPiece = false;
